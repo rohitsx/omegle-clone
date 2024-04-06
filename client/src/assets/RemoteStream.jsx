@@ -4,6 +4,7 @@ export default function RemoteStream({ peerConnection, socket }) {
 
     const remoteVideoElement = useRef()
     const [sdp, setSdp] = useState()
+    const [addRemoteVideo, setAddRemoteVideo] = useState(false)
 
     peerConnection.addEventListener('connectionstatechange', event => {
         if (peerConnection.connectionState === 'connected') {
@@ -19,6 +20,7 @@ export default function RemoteStream({ peerConnection, socket }) {
 
     socket.on("answer", (answer) => {
         peerConnection.setRemoteDescription(answer);
+        setAddRemoteVideo(true)
         console.log("answer recived")
     })
 
@@ -67,7 +69,11 @@ export default function RemoteStream({ peerConnection, socket }) {
 
     return (
         <>
-            <video id="localVideo" ref={remoteVideoElement} autoPlay playsInline ></video>
+            {sdp || addRemoteVideo ? (
+                <video id="localVideo" ref={remoteVideoElement} autoPlay playsInline ></video>
+            ) : (
+                <div className="webRTC" id="localVideoPlaceholder" style={{color:"white"}}>User Not Connected</div>
+            )}
             <button onClick={sendPeerRequest}>connect</button> 
         </>
     )

@@ -1,30 +1,8 @@
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  font-size: xx-large;
-
-
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-body {
-  text-align: center;
-  margin: auto;
-}
-
-
-#chatConatainer{
-  width: 80%;
-  height: 100%;
-  margin: auto;
 }
 
 .right{
@@ -37,5 +15,72 @@ body {
   text-align: left;
   font-size: large;
   padding-right: 1%;
+}
+
+#chatConatainer{
+  height: 36rem;
+  overflow: scroll;
+}
+
+#webRTC_container{
+  display: inline;
+  text-align: center;
+  width: fit-content;
+}
+
+
+#videoAndCatContainer{
+  display: flex;
+  justify-content: space-between;
+  text-align: center;
+}
+
+#chatbox{
+  position: relative;
+  width: 80%;
+  padding-left: 1rem;
+  padding-right: 1rem;
+ }
+
+
+#localVideoPlaceholder {
+  width: 32rem;
+  height: 18rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #533838;
+  margin-top: 1rem;
+}
+
+#selectCameraLabel{
+  padding-right: 0.3rem;
+}
+
+video{
+  height: 18rem;
+  width: fit-content;
+}
+
+#sendMassage{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  
+}
+
+#sendMessageBox{
+  width: 80%;
+  height: 1.5rem;
+}
+
+#sendMessageBtn{
+  margin-left: 1rem;
+  height: 2rem;
+}
+
+#sendMessageHeading{
+  margin-top: 0;
 }
 

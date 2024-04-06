@@ -17,6 +17,7 @@ io.on("connection", (socket) => {
   socket.on("message", (v) => {
     message = [...message, v];
     io.emit("userMassage", v);
+    console.log(message)
   })
 
   socket.on("offer", (v) => {
@@ -25,7 +26,6 @@ io.on("connection", (socket) => {
 
   socket.on("answer", (v) =>{
     socket.broadcast.emit("answer", v)
-    console.log(v)
   })
 })
 

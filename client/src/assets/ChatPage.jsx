@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef } from "react"
+import WebRTC from "./WebRTC"
 
 export default function ChatPage({ username, socket }) {
 
     const [message, setMessage] = useState([])
     const [curentUsername, setCurrentUername] = useState([])
+    const scrollMessageDiv = useRef()
 
     useEffect(() => {
         socket.on("userMassage", (v) => {
@@ -15,6 +17,12 @@ export default function ChatPage({ username, socket }) {
 
     }, [socket])
 
+    useEffect(() =>{
+        scrollMessageDiv.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, [message])
+
+
+
     const sendMessage = (e) => {
         e.preventDefault()
         socket.emit("message", {
@@ -24,18 +32,26 @@ export default function ChatPage({ username, socket }) {
         })
     }
 
+
+
     return (
         <>
-            <h4>Send Message</h4>
-            <div id="chatConatainer">
-                {message.map((item, index) => (
-                    <p className={item.username === username ? "right" : "left"} key={index}>{item.username === username ? "you" : "stranger"}: {item.message}</p>
-                ))}
+            <div id="videoAndCatContainer">
+                <WebRTC socket={socket} />
+                <div id="chatbox">
+                    <h3 id="sendMessageHeading">Send Message</h3>
+                    <div id="chatConatainer">
+                        {message.map((item, index) => (
+                            <p className={item.username === username ? "right" : "left"} key={index}>{item.username === username ? "you" : "stranger"}: {item.message}</p>
+                        ))}
+                        <div ref={scrollMessageDiv}></div>
+                    </div>
+                    <form onSubmit={sendMessage} id="sendMassage">
+                        <input type="text" name="sendMessage" id="sendMessageBox" />
+                        <input type="submit" value="send" id="sendMessageBtn" />
+                    </form>
+                </div>
             </div>
-            <form onSubmit={sendMessage}>
-                <input type="text" name="sendMessage" id="sendMessage" />
-                <input type="submit" value="send" />
-            </form>
         </>
     )
 }
