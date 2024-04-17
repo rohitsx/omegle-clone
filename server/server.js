@@ -6,6 +6,7 @@ const app = express();
 const port = 3000;
 const httpServer = createServer(app);
 let message = [];
+const users = [];
 
 const io = new Server(httpServer, {
   cors: {
@@ -13,18 +14,73 @@ const io = new Server(httpServer, {
   }
 });
 
+io.use((socket, next) => {
+  const username = socket.handshake.auth.username;
+  if (!username) {
+    return next(new Error("invalid username"));
+  }
+  socket.username = username;
+  next();
+});
+
 io.on("connection", (socket) => {
+
+
+  //user login
+  for (let [id, socket] of io.of("/").sockets) {
+    users.push({
+      userID: id,
+      username: socket.username,
+    });
+    console.log(users)
+  }
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  //exhanging chat message
   socket.on("message", (v) => {
     message = [...message, v];
     io.emit("userMassage", v);
-    console.log(message)
   })
 
+  // exchanging video call data(offer and answer)
   socket.on("offer", (v) => {
     socket.broadcast.emit("offer", v)
   })
 
-  socket.on("answer", (v) =>{
+  socket.on("answer", (v) => {
     socket.broadcast.emit("answer", v)
   })
 })
