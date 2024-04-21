@@ -14,19 +14,13 @@ const io = new Server(httpServer, {
   }
 });
 
-io.use((socket, next) => {
-  const username = socket.handshake.auth.username;
-  if (!username) {
-    return next(new Error("invalid username"));
-  }
-  socket.username = username;
-  next();
-});
 
 io.on("connection", (socket) => {
 
 
   //user login
+
+ 
   for (let [id, socket] of io.of("/").sockets) {
     users.push({
       userID: id,
