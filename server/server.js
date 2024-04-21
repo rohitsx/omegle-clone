@@ -17,22 +17,17 @@ const io = new Server(httpServer, {
 
 io.on("connection", (socket) => {
 
-
   //user login
 
  
   for (let [id, socket] of io.of("/").sockets) {
     users.push({
       userID: id,
-      username: socket.username,
+      username: socket.handshake.auth.username,
     });
     console.log(users)
   }
   
-
-
-
-
 
 
 
