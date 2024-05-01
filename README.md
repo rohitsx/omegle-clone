@@ -19,4 +19,3 @@ cd server &&
 npm install &&
 npm start
 
-That's it! You're now ready to start using the project. Enjoy! :rocket:
