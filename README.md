@@ -1,19 +1,19 @@
 ```git
-# Project Setup
+#Project Setup
 
 To get started with this project, follow these simple steps:
 
-## 1. Clone the Repository
+##1. Clone the Repository
 
 git clone [repo-url]
 
-## 2. Set up the Client
+##2. Set up the Client
 
 cd client
 npm install
 npm run dev
 
-## 3. Set up the Server
+##3. Set up the Server
 
 cd server
 npm install
