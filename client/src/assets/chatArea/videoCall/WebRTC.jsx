@@ -12,7 +12,7 @@ export default function ({ socket }) {
 
     useEffect(() => {
 
-        async function getConnectedDevices(type) {
+        const getConnectedDevices = async (type) => {
             await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
             const devices = await navigator.mediaDevices.enumerateDevices();
             return devices.filter(device => device.kind === type);

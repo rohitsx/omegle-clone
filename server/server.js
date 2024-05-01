@@ -5,14 +5,17 @@ import { Server } from "socket.io";
 const app = express();
 const port = 3000;
 const httpServer = createServer(app);
+
 let message = [];
-const users = [];
+let users = [];
+let pairs = [];
 
 const io = new Server(httpServer, {
   cors: {
     origin: "http://127.0.0.1:5173",
   }
 });
+
 
 function selectRandomUserPairFromDB(socket) {
   const availableUsers = users.filter(user => !user.connectionStatus);
@@ -34,8 +37,8 @@ function selectRandomUserPairFromDB(socket) {
 
   // Return the selected pair
   return {
-    user1: { userid: user1.userID, username: user1.username, to: user2.userID },
-    user2: { userid: user2.userID, username: user2.username, to: user1.userID }
+    user1: { userid: user1.userid, username: user1.username, to: user2.userid },
+    user2: { userid: user2.userid, username: user2.username, to: user1.userid }
   };
 }
 
@@ -44,56 +47,54 @@ function selectRandomUserPairFromDB(socket) {
 
 io.on("connection", (socket) => {
 
-  //stores user data
-  users.push({
-    userID: socket.id,
-    username: socket.handshake.auth.username,
-    connectionStatus: false
-  });
-  console.log(users);
+  socket.on("connect with stranger", (username) => {
 
-  if (users.length === 1) {
-    socket.emit("waiting", "Waiting for another user to join");
-    return null;
-  }
+    //stores user data
+    users.push({
+      userid: socket.id,
+      username: username
+    });
 
-  if (users.length > 1) {
-    const userPair = selectRandomUserPairFromDB(socket);
+    console.log("current users", users)
+    console.log("pari after reomve", pairs)
+    for (let key in users) {
+      if (!users[key].connectionStatus) {
+        socket.emit("waiting", "Waiting for another user to join");
+      }
+    }
 
-    // code to send userid in a loop
+    if (users.length > 1) {
+      let userPair = selectRandomUserPairFromDB(socket);
 
-    // for (let key in userPair) {
-    //   io.to(userPair[key].to).emit("exchanging pair info", {
-    //     username: userPair[key].username,
-    //     userID: userPair[key].userid
-    //   })
-    // }
+      pairs.push(userPair);
+      console.log("selected pair", pairs)
 
+      // emit object to selected pairs
+      for (let key in userPair) {
 
-    io.to(userPair.user1.to).emit("exchanging pair info", userPair.user1)
+        io.to(userPair[key].to).emit("exchanging pair info", {
+          username: userPair[key].username,
+          userid: userPair[key].userid,
+          to: userPair[key].to
+        })
 
-    socket.on("user1 recieved", () => {
-      console.log("done user2")
-      io.to(userPair.user2.to).emit("exchanging pair info", userPair.user2)
-    })
-
-
-    for (let i = 0; i < users.length; i++) {
-      if (users[i].userID === userPair.user1.userid || users[i].userID === userPair.user2.userid) {
-        users[i].connectionStatus = true;
+        users = users.filter(v => v.userid !== userPair[key].userid)
       }
 
+      userPair = {};
     }
-  }
-
+  })
 
   //exhanging chat message
 
+  socket.on("exit", () => "user lost it")
+
   socket.on("private message", ({ content, to }) => {
-    console.log(content)
+    console.log(content, to)
     message = [...message, content];
+    console.log(message)
     io.to(to).emit("private message", {
-      content,
+      content: content,
       from: socket.id,
     });
   });
@@ -105,6 +106,19 @@ io.on("connection", (socket) => {
 
   socket.on("answer", (v) => {
     socket.broadcast.emit("answer", v)
+  })
+
+  socket.on("disconnect", () => {
+    for (let key in pairs) {
+      const { user1, user2 } = pairs[key];
+      if (user1.userid === socket.id || user2.userid === socket.id) {
+        const userLeftTheChat = user1.userid === socket.id ? user1 : user2;
+        console.log("user1", user1, "user2", user2, "userleftthechat", userLeftTheChat, "pair key", pairs[key]);
+        io.to(userLeftTheChat.to).emit("user left the chat", userLeftTheChat.username);
+        delete pairs[key];
+        return null;
+      }
+    }
   })
 })
 

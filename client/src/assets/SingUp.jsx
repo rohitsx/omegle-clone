@@ -1,30 +1,26 @@
-import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 
 export default function SingUp({ setUsername, socket }) {
 
   const naviagte = useNavigate()
 
-  socket.on("connect_error", (err) => {
-    if (err.message === "invalid username") {
-      alert("wrong input")
-    }
-  });
-
   const usernameSubmit = (e) => {
     e.preventDefault()
-    setUsername(e.target[0].value)
-    socket.auth = { username: e.target[0].value }
-    socket.connect()
-    naviagte("/chat")
+    if (e.target[0].value) {
+      setUsername(e.target[0].value)
+      socket.emit("connect with stranger", e.target[0].value)
+      naviagte("/chat")
+    } else {
+      alert("You Forgot To Add Your Name")
+    }
   }
 
   return (
     <>
-      <h4>Sing Up</h4>
+      <h1>Omegle Clone</h1>
       <form onSubmit={usernameSubmit}>
-        <input type="text" name="usename" id="username" placeholder='Create Username' /><br />
-        <input type="submit" value="Submit" />
+        <input type="text" name="usename" id="username" placeholder='Enter Your Name' /><br />
+        <input type="submit" value="Start a Chat" />
       </form>
     </>
   )
