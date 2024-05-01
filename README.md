@@ -9,14 +9,14 @@ git clone [repo-url]
 
 ## 2. Set up the Client
 
-cd client
-npm install
+cd client &&
+npm install &&
 npm run dev
 
 ## 3. Set up the Server
 
-cd server
-npm install
+cd server &&
+npm install &&
 npm start
 
 That's it! You're now ready to start using the project. Enjoy! :rocket:
