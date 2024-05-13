@@ -1,14 +1,14 @@
+import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
+import { io } from "socket.io-client";
 
-export default function SingUp({ setUsername, socket }) {
-
+export default function SingUp({ setSocket }) {
   const naviagte = useNavigate()
 
-  const usernameSubmit = (e) => {
+  function usernameSubmit(e) {
     e.preventDefault()
     if (e.target[0].value) {
-      setUsername(e.target[0].value)
-      socket.emit("connect with stranger", e.target[0].value)
+      localStorage.setItem("username", e.target[0].value)
       naviagte("/chat")
     } else {
       alert("You Forgot To Add Your Name")
@@ -16,12 +16,12 @@ export default function SingUp({ setUsername, socket }) {
   }
 
   return (
-    <>
-      <h1>Omegle Clone</h1>
+    <div id="signupPage">
+      <h1 id="OmegelCloneHeading">Omegel Clone</h1>
       <form onSubmit={usernameSubmit}>
-        <input type="text" name="usename" id="username" placeholder='Enter Your Name' /><br />
-        <input type="submit" value="Start a Chat" />
+        <input type="text" className="singupInputBox" placeholder='Enter Your Name' />
+        <input type="submit" className="singupInputBox" id="signupSubmitBtn" value="Start Chat" />
       </form>
-    </>
+    </div>
   )
 }

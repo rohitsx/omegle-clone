@@ -17,46 +17,24 @@ const io = new Server(httpServer, {
 });
 
 
-function selectRandomUserPairFromDB(socket) {
-  const availableUsers = users.filter(user => !user.connectionStatus);
+io.use((socket, next) => {
+  const username = socket.handshake.auth.username;
+  users.push({
+    userid: socket.id,
+    username: username,
+    connectionStatus: false
+  });
 
-  if (availableUsers.length < 2) {
-    return null;
-  }
-
-  // Select random user indices
-  let user1Index = Math.floor(Math.random() * availableUsers.length);
-  let user2Index;
-  do {
-    user2Index = Math.floor(Math.random() * availableUsers.length);
-  } while (user2Index === user1Index);
-
-  // Select users
-  const user1 = availableUsers[user1Index];
-  const user2 = availableUsers[user2Index];
-
-  // Return the selected pair
-  return {
-    user1: { userid: user1.userid, username: user1.username, to: user2.userid },
-    user2: { userid: user2.userid, username: user2.username, to: user1.userid }
-  };
-}
-
+  console.log("current users", users)
+  next();
+})
 
 
 
 io.on("connection", (socket) => {
 
   socket.on("connect with stranger", (username) => {
-
-    //stores user data
-    users.push({
-      userid: socket.id,
-      username: username
-    });
-
-    console.log("current users", users)
-    console.log("pari after reomve", pairs)
+    
     for (let key in users) {
       if (!users[key].connectionStatus) {
         socket.emit("waiting", "Waiting for another user to join");
@@ -85,9 +63,6 @@ io.on("connection", (socket) => {
     }
   })
 
-  //exhanging chat message
-
-  socket.on("exit", () => "user lost it")
 
   socket.on("private message", ({ content, to }) => {
     console.log(content, to)
@@ -121,5 +96,31 @@ io.on("connection", (socket) => {
     }
   })
 })
+
+
+function selectRandomUserPairFromDB(socket) {
+  const availableUsers = users.filter(user => !user.connectionStatus);
+
+  if (availableUsers.length < 2) {
+    return null;
+  }
+
+  // Select random user indices
+  let user1Index = Math.floor(Math.random() * availableUsers.length);
+  let user2Index;
+  do {
+    user2Index = Math.floor(Math.random() * availableUsers.length);
+  } while (user2Index === user1Index);
+
+  // Select users
+  const user1 = availableUsers[user1Index];
+  const user2 = availableUsers[user2Index];
+
+  // Return the selected pair
+  return {
+    user1: { userid: user1.userid, username: user1.username, to: user2.userid },
+    user2: { userid: user2.userid, username: user2.username, to: user1.userid }
+  };
+}
 
 httpServer.listen(port, () => console.log("port running at", port))
