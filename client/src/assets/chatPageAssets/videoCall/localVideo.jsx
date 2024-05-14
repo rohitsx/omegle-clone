@@ -3,6 +3,7 @@ import React, { useEffect } from "react"
 export default function LocalVideo({ localVideo, pc }) {
 
     useEffect(() => {
+        console.log(pc)
         if (pc) {
             const constraints = {
                 'video': true,
@@ -13,16 +14,9 @@ export default function LocalVideo({ localVideo, pc }) {
                     localVideo.current.srcObject = stream
                     stream.getTracks().forEach(track => {
                         pc.addTrack(track, stream)
-                    })    
+                    })
                 })
                 .catch(err => console.log('Error accessing media devices.', err))
-    
-            return () => {
-                const stream = localVideo.current.srcObject;
-                if (stream) {
-                    stream.getTracks().forEach(track => track.stop());
-                }
-            }
         }
     }, [pc])
 

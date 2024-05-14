@@ -1,6 +1,6 @@
 import React, { useEffect } from "react"
 
-export default function RemoteVideo({ remoteVideo, socket, pc }) {
+export default function RemoteVideo({ remoteVideo, socket, pc, strangerUserId }) {
 
     useEffect(() => {
         async function handelOffer(offer) {
@@ -10,7 +10,12 @@ export default function RemoteVideo({ remoteVideo, socket, pc }) {
                 const answer = await pc.createAnswer()
                 await pc.setLocalDescription(answer)
 
-                socket.emit("answer", answer)
+                console.log("local desc set remote");
+
+                socket.emit("answer", {
+                    answer: answer,
+                    to: strangerUserId
+                })
 
                 console.log("answer send.", answer)
             } catch (err) {
@@ -27,7 +32,7 @@ export default function RemoteVideo({ remoteVideo, socket, pc }) {
                 socket.off("offer")
             }
         }
-    }, [pc])
+    }, [strangerUserId])
 
     useEffect(() => {
         async function handelAnswer(answer) {
@@ -36,7 +41,7 @@ export default function RemoteVideo({ remoteVideo, socket, pc }) {
                 await pc.setRemoteDescription(remoteDesc)
                 console.log("recived answer", remoteDesc)
             } catch (err) {
-                console.log("err srtting remoteDesc")
+                console.log("err srtting remoteDesc", err)
             }
         }
 

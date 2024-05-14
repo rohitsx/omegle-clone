@@ -2,13 +2,13 @@ import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
 import { io } from "socket.io-client";
 
-export default function SingUp({ setSocket }) {
+export default function SingUp({ setUsername }) {
   const naviagte = useNavigate()
 
   function usernameSubmit(e) {
     e.preventDefault()
     if (e.target[0].value) {
-      localStorage.setItem("username", e.target[0].value)
+      setUsername(e.target[0].value)
       naviagte("/chat")
     } else {
       alert("You Forgot To Add Your Name")

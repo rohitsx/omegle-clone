@@ -9,6 +9,7 @@ const httpServer = createServer(app);
 let message = [];
 let users = [];
 let pairs = [];
+let username;
 
 const io = new Server(httpServer, {
   cors: {
@@ -18,14 +19,7 @@ const io = new Server(httpServer, {
 
 
 io.use((socket, next) => {
-  const username = socket.handshake.auth.username;
-  users.push({
-    userid: socket.id,
-    username: username,
-    connectionStatus: false
-  });
-
-  console.log("current users", users)
+  username = socket.handshake.auth.username;
   next();
 })
 
@@ -33,8 +27,15 @@ io.use((socket, next) => {
 
 io.on("connection", (socket) => {
 
-  socket.on("connect with stranger", (username) => {
-    
+  socket.on("connectWithStranger", (username) => {
+
+    users.push({
+      userid: socket.id,
+      username: username,
+      connectionStatus: false
+    });
+
+    console.log("connect with stranger got triggered", users);
     for (let key in users) {
       if (!users[key].connectionStatus) {
         socket.emit("waiting", "Waiting for another user to join");
@@ -50,10 +51,9 @@ io.on("connection", (socket) => {
       // emit object to selected pairs
       for (let key in userPair) {
 
-        io.to(userPair[key].to).emit("exchanging pair info", {
+        io.to(userPair[key].to).emit("exchangingPairInfo", {
           username: userPair[key].username,
-          userid: userPair[key].userid,
-          to: userPair[key].to
+          userid: userPair[key].userid
         })
 
         users = users.filter(v => v.userid !== userPair[key].userid)
@@ -75,22 +75,30 @@ io.on("connection", (socket) => {
   });
 
   // exchanging video call data(offer and answer)
-  socket.on("offer", (v) => {
-    socket.broadcast.emit("offer", v)
+  socket.on("offer", ({ offer, to }) => {
+    io.to(to).emit("offer", offer)
   })
 
-  socket.on("answer", (v) => {
-    socket.broadcast.emit("answer", v)
+  socket.on("answer", ({ answer, to }) => {
+    io.to(to).emit("answer", answer)
   })
 
+  socket.on("new-ice-candidate", ({icecandidate, to}) =>{
+    io.to(to).emit("new-ice-candidate", icecandidate)
+  })
   socket.on("disconnect", () => {
+
+    console.log("disconnected")
+
     for (let key in pairs) {
       const { user1, user2 } = pairs[key];
       if (user1.userid === socket.id || user2.userid === socket.id) {
         const userLeftTheChat = user1.userid === socket.id ? user1 : user2;
-        console.log("user1", user1, "user2", user2, "userleftthechat", userLeftTheChat, "pair key", pairs[key]);
-        io.to(userLeftTheChat.to).emit("user left the chat", userLeftTheChat.username);
+        io.to(userLeftTheChat.to).emit("userLeftTheChat", userLeftTheChat.username);
+        console.log("pairs before dlete", pairs);
         delete pairs[key];
+        console.log("userLeftTheChat", userLeftTheChat);
+        console.log("pairs after delete", pairs);
         return null;
       }
     }

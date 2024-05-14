@@ -6,14 +6,16 @@ import ChatPage from "./assets/ChatPage";
 
 function App() {
 
+  const [username, setUsername] = useState(null)
+
   const router = createBrowserRouter([
     {
       path: '/',
-      element: <SingUp />,
+      element: <SingUp setUsername={setUsername} />,
     },
     {
       path: '/chat',
-      element: <ChatPage username={localStorage.getItem("username")} />
+      element: <ChatPage username ={username} />
     }
   ]);
 
