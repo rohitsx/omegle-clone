@@ -15,6 +15,7 @@ export default function ChatPage({ username }) {
     const [strangerUserId, setStrangerUserId] = useState('')
     const [strangerUsername, setStrangerUsername] = useState(null)
     const [peerConnection, setPeerConnection] = useState(null)
+    const [sendPeerRequest, setSendPeerRequest] = useState(null)
     const localVideo = useRef(null)
     const remoteVideo = useRef(null)
     const nav = useNavigate()
@@ -45,6 +46,7 @@ export default function ChatPage({ username }) {
                     console.log('Received Stranger SocketId', v)
                     setStrangerUserId(v.userid)
                     setStrangerUsername(v.username)
+                    setSendPeerRequest(v.sendPeerRequest)
                 }
             })
 
@@ -56,7 +58,9 @@ export default function ChatPage({ username }) {
                 socket.emit('connectWithStranger', username)
             })
 
-            socket.on('waiting', v => console.log(v))
+            socket.on('waiting', v => {
+                console.log("wating for user")
+            })
 
             return () => {
                 socket.off('exchangingPairInfo')
@@ -71,112 +75,64 @@ export default function ChatPage({ username }) {
     // video call setup
 
     useEffect(() => {
-        const configuration = { 'iceServers': [{ 'urls': 'stun:stun.l.google.com:19302' }] }
-        setPeerConnection(new RTCPeerConnection(configuration))
-    }, [])
+        if (sendPeerRequest !== null) {
+            console.log("sendPeerRequest: ", sendPeerRequest);
+            const configuration = { 'iceServers': [{ 'urls': 'stun:stun.l.google.com:19302' }] }
+            setPeerConnection(new RTCPeerConnection(configuration))
+        }
+    }, [sendPeerRequest])
 
     useEffect(() => {
         if (peerConnection) {
-            peerConnection.addEventListener('connectionstatechange', event => {
-                if (peerConnection.connectionState === 'connected') {
-                    console.log("peer connected")
-                }
-            })
-        }
-    }, [peerConnection])
-
-    useEffect(() => {
-        if (peerConnection && strangerUserId) {
             peerConnection.addEventListener('icecandidate', event => {
+                console.log("ypp");
                 if (event.candidate) {
+                    console.log("ho1");
                     socket.emit("new-ice-candidate", {
                         icecandidate: event.candidate,
                         to: strangerUserId
                     })
+                    console.log("send ice", event.candidate)
                 }
             })
         }
 
-    }, [strangerUserId])
-
-    useEffect(() => {
-        if (peerConnection) {
-            async function handelIce(ice) {
+        async function handelIceCandidate(message) {
+            if (message.iceCandidate) {
                 try {
-                    await peerConnection.addIceCandidate(ice)
+                    await peerConnection.addIceCandidate(message.iceCandidate)
+                    console.log("Recived ice", message.iceCandidate);
                 } catch (e) {
                     console.error('Error adding received ice candidate', e)
                 }
             }
-
-            if (socket) {
-                socket.on("new-ice-candidate", handelIce)
-            }
         }
-    }, [strangerUserId])
 
-    // // scroll the page when new meassage added
-    // useEffect(() => {
-    //     scrollMessageDiv.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    // }, [message])
+        socket && socket.on("new-ice-candidate", message => handelIceCandidate(message))
+    }, [peerConnection])
 
-    // function sendMessage(e) {
-    //     e.preventDefault()
-
-    //     socket.emit('private message', {
-    //         content: {
-    //             username: username,
-    //             message: e.target[0].value,
-    //             userid: socket.id
-    //         },
-    //         to: strangerUserId
-    //     })
-
-    //     setMessage(prevMessages => [...prevMessages, {
-    //         username: username,
-    //         message: e.target[0].value,
-    //     }]);
-
-    //     setMessageInputValue('')
-    // }
-
-    // return (
-    //     <div id='chatbox'>
-
-    //         <div id='chatConatainer'>
-    //             {message.map((item, index) => (
-    //                 <p className={item.username === username ? 'right' : 'left'} key={index}>
-    //                     {item.username === username ? 'you' : strangerUsername}: {item.message}
-    //                 </p>
-    //             ))}
-    //             <div ref={scrollMessageDiv}></div>
-    //         </div>
-    //         <form onSubmit={sendMessage} id='sendMassage'>
-    //             <input
-    //                 type='text'
-    //                 name='sendMessage'
-    //                 id='sendMessageBox'
-    //                 value={messageInputValue} onChange={(e) => setMessageInputValue(e.target.value)} />
-    //             <input type='submit' value='send' id='sendMessageBtn' />
-    //         </form>
-    //     </div>
-    // )
 
     return (
 
         <div id='chatPage'>
             <div id='videoCall'>
                 <h1>{username} connected to {strangerUsername}</h1>
-                <LocalVideo localVideo={localVideo} pc={peerConnection} />
+                <LocalVideo
+                    localVideo={localVideo}
+                    socket={socket}
+                    peerConnection={peerConnection}
+                    strangerUserId={strangerUserId}
+                    sendPeerRequest={sendPeerRequest}
+                />
                 <RemoteVideo
                     remoteVideo={remoteVideo}
                     socket={socket}
-                    pc={peerConnection}
+                    peerConnection={peerConnection}
                     strangerUserId={strangerUserId}
                 />
                 <CreateOffetBtn
                     socket={socket}
-                    pc={peerConnection}
+                    peerConnection={peerConnection}
                     strangerUserId={strangerUserId}
                 />
                 <KillMediaStream localVideo={localVideo} />
@@ -187,3 +143,73 @@ export default function ChatPage({ username }) {
         </div>
     )
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// // scroll the page when new meassage added
+// useEffect(() => {
+//     scrollMessageDiv.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+// }, [message])
+
+// function sendMessage(e) {
+//     e.preventDefault()
+
+//     socket.emit('private message', {
+//         content: {
+//             username: username,
+//             message: e.target[0].value,
+//             userid: socket.id
+//         },
+//         to: strangerUserId
+//     })
+
+//     setMessage(prevMessages => [...prevMessages, {
+//         username: username,
+//         message: e.target[0].value,
+//     }]);
+
+//     setMessageInputValue('')
+// }
+
+// return (
+//     <div id='chatbox'>
+
+//         <div id='chatConatainer'>
+//             {message.map((item, index) => (
+//                 <p className={item.username === username ? 'right' : 'left'} key={index}>
+//                     {item.username === username ? 'you' : strangerUsername}: {item.message}
+//                 </p>
+//             ))}
+//             <div ref={scrollMessageDiv}></div>
+//         </div>
+//         <form onSubmit={sendMessage} id='sendMassage'>
+//             <input
+//                 type='text'
+//                 name='sendMessage'
+//                 id='sendMessageBox'
+//                 value={messageInputValue} onChange={(e) => setMessageInputValue(e.target.value)} />
+//             <input type='submit' value='send' id='sendMessageBtn' />
+//         </form>
+//     </div>
+// )

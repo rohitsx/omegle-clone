@@ -1,71 +1,36 @@
 import React, { useEffect } from "react"
 
-export default function RemoteVideo({ remoteVideo, socket, pc, strangerUserId }) {
+export default function RemoteVideo({ remoteVideo, socket, peerConnection, strangerUserId }) {
 
     useEffect(() => {
-        async function handelOffer(offer) {
+
+        async function acceptOffer(offer) {
             const remoteDesc = new RTCSessionDescription(offer)
-            try {
-                await pc.setRemoteDescription(remoteDesc)
-                const answer = await pc.createAnswer()
-                await pc.setLocalDescription(answer)
+            peerConnection.setRemoteDescription(remoteDesc)
+            const answer = await peerConnection.createAnswer()
+            await peerConnection.setLocalDescription(answer)
 
-                console.log("local desc set remote");
+            socket.emit("answer", {
+                answer: answer,
+                to: strangerUserId
+            })
 
-                socket.emit("answer", {
-                    answer: answer,
-                    to: strangerUserId
-                })
-
-                console.log("answer send.", answer)
-            } catch (err) {
-                console.log("error in creating answer or setting remoteDesc", err)
-            }
+            console.log("answer Send", answer)
         }
 
-        if (socket) {
-            socket.on("offer", handelOffer)
-        }
-
-        return() => {
-            if (socket) {
-                socket.off("offer")
-            }
-        }
-    }, [strangerUserId])
+        peerConnection && socket.on("offer", offer => acceptOffer(offer))
+    }, [peerConnection])
 
     useEffect(() => {
-        async function handelAnswer(answer) {
-            const remoteDesc = new RTCSessionDescription(answer)
-            try {
-                await pc.setRemoteDescription(remoteDesc)
-                console.log("recived answer", remoteDesc)
-            } catch (err) {
-                console.log("err srtting remoteDesc", err)
-            }
-        }
-
-        if (socket) {
-            socket.on("answer", handelAnswer)
-        }
-
-        return () => {
-            if (socket) {
-                socket.off("answer")
-            }
-        }
-    }, [pc])
-
-    useEffect(() => {
-        if (pc) {
-            pc.addEventListener('track', async (event) => {
-                const [remoteStream] = event.streams
-                remoteVideo.current.srcObject = remoteStream
-
-                console.log("working on remote stream")
+        if (peerConnection) {
+            peerConnection.addEventListener('track', async (event) => {
+                console.log("added remote stream")
+                const [remoteStream] = event.streams;
+                remoteVideo.current.srcObject = remoteStream;
+                console.log("added remote stream");
             })
         }
-    }, [pc])
+    }, [peerConnection])
 
-    return <video ref={remoteVideo} autoPlay playsInline controls={false}></video>
+    return <video id="remoteVideo" ref={remoteVideo} autoPlay playsInline controls={false}></video>
 }

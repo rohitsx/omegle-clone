@@ -1,4 +1,4 @@
-import express from "express";
+import express, { json } from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
 
@@ -32,7 +32,8 @@ io.on("connection", (socket) => {
     users.push({
       userid: socket.id,
       username: username,
-      connectionStatus: false
+      connectionStatus: false,
+      sendPeerRequest: false
     });
 
     console.log("connect with stranger got triggered", users);
@@ -53,7 +54,8 @@ io.on("connection", (socket) => {
 
         io.to(userPair[key].to).emit("exchangingPairInfo", {
           username: userPair[key].username,
-          userid: userPair[key].userid
+          userid: userPair[key].userid,
+          sendPeerRequest: userPair[key].sendPeerRequest
         })
 
         users = users.filter(v => v.userid !== userPair[key].userid)
@@ -80,10 +82,11 @@ io.on("connection", (socket) => {
   })
 
   socket.on("answer", ({ answer, to }) => {
+    console.log("answer recived", JSON.stringify(answer))
     io.to(to).emit("answer", answer)
   })
 
-  socket.on("new-ice-candidate", ({icecandidate, to}) =>{
+  socket.on("new-ice-candidate", ({ icecandidate, to }) => {
     io.to(to).emit("new-ice-candidate", icecandidate)
   })
   socket.on("disconnect", () => {
@@ -124,11 +127,27 @@ function selectRandomUserPairFromDB(socket) {
   const user1 = availableUsers[user1Index];
   const user2 = availableUsers[user2Index];
 
+  const pairs = [user1, user2];
+  const randomIndex = Math.floor(Math.random() * 2);
+  pairs[randomIndex].sendPeerRequest = true
+
+
   // Return the selected pair
   return {
-    user1: { userid: user1.userid, username: user1.username, to: user2.userid },
-    user2: { userid: user2.userid, username: user2.username, to: user1.userid }
+    user1: {
+      userid: user1.userid,
+      username: user1.username,
+      sendPeerRequest: user1.sendPeerRequest,
+      to: user2.userid
+    },
+    user2: {
+      userid: user2.userid,
+      username: user2.username,
+      sendPeerRequest: user2.sendPeerRequest,
+      to: user1.userid
+    }
   };
 }
+
 
 httpServer.listen(port, () => console.log("port running at", port))
