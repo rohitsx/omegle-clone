@@ -82,7 +82,6 @@ io.on("connection", (socket) => {
   })
 
   socket.on("answer", ({ answer, to }) => {
-    console.log("answer recived", JSON.stringify(answer))
     io.to(to).emit("answer", answer)
   })
 

@@ -2,58 +2,76 @@ import React, { useEffect, useState } from "react"
 
 export default function LocalVideo({ localVideo, peerConnection, strangerUserId, socket, sendPeerRequest }) {
 
-    const [isStreamAdded, setIsStreamAdded] = useState(null)
+    const [stremAddedToPC, setStremAddedToPC] = useState(null)
 
     useEffect(() => {
-        function getStream() {
+        // if (peerConnection) {
+        //     const constraints = {
+        //         'video': true,
+        //         'audio': true
+        //     }
+        //     navigator.mediaDevices.getUserMedia(constraints)
+        //         .then(stream => {
+        //             localVideo.current.srcObject = stream
+        //              return stream.getTracks().forEach(track => {
+        //                 peerConnection.addTrack(track, stream)
+        //             })
+        //         }).then(offer => {})
+        //         .catch(error => {
+        //             console.error('Error accessing media devices.', error);
+        //         })
+        // }
+
+        async function openMediaStream() {
             const constraints = {
                 'video': true,
                 'audio': true
             }
-            navigator.mediaDevices.getUserMedia(constraints)
-                .then(stream => {
-                    localVideo.current.srcObject = stream
-                    stream.getTracks().forEach(track => {
-                        peerConnection.addTrack(track, stream)
-                    })
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia(constraints)
+                localVideo.current.srcObject = stream
+                stream.getTracks().forEach(track => {
+                    peerConnection.addTrack(track, stream)
+                    console.log("added stream")
                 })
-                .catch(error => {
-                    console.error('Error accessing media devices.', error);
-                })
+            } catch (err) {
+                console.log("err acces local media stream", err)
+            }
         }
 
+        async function sendOffer() {
+            const offer = await peerConnection.createOffer();
+            await peerConnection.setLocalDescription(offer)
+            socket.emit("offer", {
+                offer: offer,
+                to: strangerUserId
+            })
 
+            console.log("offer send", offer)
+        }
 
-        peerConnection && getStream()
-        setIsStreamAdded(true)
+        async function setupConnection() {
+            try {
+                peerConnection && await openMediaStream()
+                sendPeerRequest && await sendOffer()
+            } catch (err) {
+                console.log("err stuping connection", err)
+            }
+        }
 
+        setupConnection()
     }, [peerConnection])
 
     useEffect(() => {
-        if (isStreamAdded !== null) {
-            async function sendOffer() {
-                const offer = await peerConnection.createOffer()
-                await peerConnection.setLocalDescription(offer)
-                socket.emit("offer", {
-                    offer: offer,
-                    to: strangerUserId
-                })
 
-                console.log("offer send", offer);
-            }
-
-            async function handelAnswer(answer) {
-                const remoteDesc = new RTCSessionDescription(answer)
-                await peerConnection.setRemoteDescription(remoteDesc)
-                console.log("recived answer", answer)
-            }
-
-            sendPeerRequest && sendOffer()
-            peerConnection && socket.on("answer", answer => handelAnswer(answer))
+        async function handelAnswer(answer) {
+            const remoteDesc = new RTCSessionDescription(answer)
+            await peerConnection.setRemoteDescription(remoteDesc)
+            console.log("recived answer", answer)
         }
 
-        return() => setIsStreamAdded(null)
-    }, [isStreamAdded])
+        peerConnection && socket.on("answer", answer => handelAnswer(answer))
+    }, [peerConnection])
 
 
     // useEffect(() => {

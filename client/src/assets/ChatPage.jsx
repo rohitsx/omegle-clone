@@ -85,23 +85,21 @@ export default function ChatPage({ username }) {
     useEffect(() => {
         if (peerConnection) {
             peerConnection.addEventListener('icecandidate', event => {
-                console.log("ypp");
                 if (event.candidate) {
-                    console.log("ho1");
                     socket.emit("new-ice-candidate", {
                         icecandidate: event.candidate,
                         to: strangerUserId
                     })
-                    console.log("send ice", event.candidate)
+                    console.log("send ice")
                 }
             })
         }
 
         async function handelIceCandidate(message) {
-            if (message.iceCandidate) {
+            if (message) {
                 try {
-                    await peerConnection.addIceCandidate(message.iceCandidate)
-                    console.log("Recived ice", message.iceCandidate);
+                    await peerConnection.addIceCandidate(message)
+                    console.log("Recived ice")
                 } catch (e) {
                     console.error('Error adding received ice candidate', e)
                 }
