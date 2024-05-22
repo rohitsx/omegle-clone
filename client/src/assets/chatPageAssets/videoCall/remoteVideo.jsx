@@ -3,18 +3,7 @@ import React, { useEffect, useState } from "react"
 export default function RemoteVideo({ remoteVideo, socket, peerConnection, strangerUserId }) {
 
     const [answer, setAnswer] = useState(null)
-
-    // useEffect(() => {
-
-    //     async function handelOffer(offer) {
-    //         const remoteDesc = new RTCSessionDescription(offer)
-    //         peerConnection.setRemoteDescription(remoteDesc)
-    //         const answer = await peerConnection.createAnswer()
-    //         await peerConnection.setLocalDescription(answer)
-    //     }
-
-    //     peerConnection && socket.on("offer", offer => handelOffer(offer))
-    // }, [peerConnection])
+    const [streamStatus, setStreamStatus] = useState(null)
 
     useEffect(() => {
         async function handelOffer(offer) {
@@ -25,6 +14,11 @@ export default function RemoteVideo({ remoteVideo, socket, peerConnection, stran
         }
 
         peerConnection && socket.on("offer", offer => handelOffer(offer))
+
+        return () => {
+            setAnswer(null)
+            socket && socket.off("offer")
+        }
     }, [peerConnection])
 
     useEffect(() => {
@@ -44,14 +38,19 @@ export default function RemoteVideo({ remoteVideo, socket, peerConnection, stran
     useEffect(() => {
         if (peerConnection) {
             peerConnection.addEventListener('track', async (event) => {
-                const [remoteStream] = event.streams;
-                remoteVideo.current.srcObject = remoteStream;
-                console.log("added remote stream");
+                const [remoteStream] = event.streams
+                await setStreamStatus(true)
+                remoteVideo.current.srcObject = remoteStream
+                console.log("added remote stream")
             })
         }
+
+        return () => setStreamStatus(null)
     }, [peerConnection])
 
-    return ({remoteVideo.current.srcObject ? (
-        <video id="remoteVideo" ref={remoteVideo} autoPlay playsInline controls={false}></video>
-    ) : ()})
+    return (<>{
+        peerConnection ? (<video id="remoteVideo" ref={remoteVideo} autoPlay playsInline controls={false}></video>) :
+            (<div id="remoteVideoPlaceHolder"></div>)
+    }</>)
+
 }

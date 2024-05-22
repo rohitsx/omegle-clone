@@ -1,9 +1,11 @@
-export default function SendMessageBtn({ socket, setMessage }) {
+import { useState } from "react";
+
+export default function InputBox({ socket, setMessage, strangerUserId, username }) {
+
+    const [messageInputValue, setMessageInputValue] = useState('')
 
     function sendMessage(e) {
         e.preventDefault()
-
-        const username = localStorage.getItem("username")
 
         socket.emit("private message", {
             content: {

@@ -1,17 +1,15 @@
 import { useEffect, useState, useRef } from 'react'
 import { io } from 'socket.io-client';
 import { useNavigate } from 'react-router-dom';
-import MessagBox from './chatPageAssets/messaging/messageBox';
-import SendMessageBtn from './chatPageAssets/messaging/sendMessagBtn';
 import LocalVideo from './chatPageAssets/videoCall/localVideo';
 import RemoteVideo from './chatPageAssets/videoCall/remoteVideo';
-import CreateOffetBtn from './chatPageAssets/videoCall/startCamBtn';
-import KillMediaStream from './chatPageAssets/videoCall/turnoffCamBtn';
+import MessagBox from './chatPageAssets/messaging/messageBox';
+import InputBox from './chatPageAssets/messaging/inputBox';
 
 export default function ChatPage({ username }) {
 
     const [socket, setSocket] = useState(null)
-    const [message, setMessage] = useState([null])
+    const [message, setMessage] = useState([])
     const [strangerUserId, setStrangerUserId] = useState('')
     const [strangerUsername, setStrangerUsername] = useState(null)
     const [peerConnection, setPeerConnection] = useState(null)
@@ -114,7 +112,6 @@ export default function ChatPage({ username }) {
 
         <div id='chatPage'>
             <div id='videoCall'>
-                <h1>{username} connected to {strangerUsername}</h1>
                 <LocalVideo
                     localVideo={localVideo}
                     socket={socket}
@@ -128,15 +125,24 @@ export default function ChatPage({ username }) {
                     peerConnection={peerConnection}
                     strangerUserId={strangerUserId}
                 />
-                <CreateOffetBtn
-                    socket={socket}
-                    peerConnection={peerConnection}
-                    strangerUserId={strangerUserId}
-                />
-                <KillMediaStream localVideo={localVideo} />
             </div>
             <div id='messaging'>
-
+                <h1>{username} connected to {strangerUsername}</h1>
+                <MessagBox
+                    message={message}
+                    username={username}
+                    socket={socket}
+                    setMessage={setMessage}
+                    strangerUsername={strangerUsername}
+                    strangerUserId={strangerUserId}
+                />
+                <InputBox
+                    socket={socket}
+                    setMessage={setMessage}
+                    strangerUserId={strangerUserId}
+                    username={username}
+                    strangerUsername={strangerUsername}
+                />
             </div>
         </div>
     )

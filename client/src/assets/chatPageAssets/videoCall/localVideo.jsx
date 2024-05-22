@@ -2,29 +2,15 @@ import React, { useEffect, useState } from "react"
 
 export default function LocalVideo({ localVideo, peerConnection, strangerUserId, socket, sendPeerRequest }) {
 
-    const [stremAddedToPC, setStremAddedToPC] = useState(null)
+    const [streamStatus, setStreamStatus] = useState(null)
 
     useEffect(() => {
-        // if (peerConnection) {
-        //     const constraints = {
-        //         'video': true,
-        //         'audio': true
-        //     }
-        //     navigator.mediaDevices.getUserMedia(constraints)
-        //         .then(stream => {
-        //             localVideo.current.srcObject = stream
-        //              return stream.getTracks().forEach(track => {
-        //                 peerConnection.addTrack(track, stream)
-        //             })
-        //         }).then(offer => {})
-        //         .catch(error => {
-        //             console.error('Error accessing media devices.', error);
-        //         })
-        // }
-
         async function openMediaStream() {
             const constraints = {
-                'video': true,
+                'video': {
+                    width: { ideal: 1920 }, 
+                    height: { ideal: 1080 }
+                },
                 'audio': true
             }
             try {
@@ -60,6 +46,8 @@ export default function LocalVideo({ localVideo, peerConnection, strangerUserId,
         }
 
         setupConnection()
+
+        return () => setStreamStatus(null)
     }, [peerConnection])
 
     useEffect(() => {
@@ -71,37 +59,13 @@ export default function LocalVideo({ localVideo, peerConnection, strangerUserId,
         }
 
         peerConnection && socket.on("answer", answer => handelAnswer(answer))
+
+        return () => socket && socket.off("answer")
     }, [peerConnection])
 
 
-    // useEffect(() => {
-    //     async function listenIceCandidate() {
-    //         peerConnection.addEventListener('icecandidate', event => {
-    //             if (event.candidate) {
-    //                 socket.emit("new-ice-candidate", {
-    //                     icecandidate: event.candidate,
-    //                     to: strangerUserId
-    //                 })
-    //                 console.log("send ice", event.candidate)
-    //             }
-    //         })
-    //     }
-
-    //     async function handelIceCandidate(message) {
-    //         if (message.iceCandidate) {
-    //             try {
-    //                 await peerConnection.addIceCandidate(message.iceCandidate)
-    //                 console.log("Recived ice", message.iceCandidate);
-    //             } catch (e) {
-    //                 console.error('Error adding received ice candidate', e)
-    //             }
-    //         }
-    //     }
-
-    //     peerConnection && listenIceCandidate()
-    //     peerConnection && socket.on("new-ice-candidate", message => handelIceCandidate(message))
-    // }, [peerConnection])
-
-
-    return <video id="localVideo" ref={localVideo} autoPlay playsInline controls={false}></video>
+    return (<>{
+        peerConnection ? (<video id="localVideo" ref={localVideo} autoPlay playsInline controls={false}></video>) :
+            (<div id="localVideoPlaceholder"></div>)
+    }</>)
 }
