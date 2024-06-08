@@ -19,7 +19,6 @@ export default function ChatPage({ username }) {
     const nav = useNavigate()
 
     useEffect(() => {
-
         if (username) {
             setSocket(io('http://localhost:3000', {
                 transports: ['websocket'],
@@ -42,9 +41,9 @@ export default function ChatPage({ username }) {
             socket.on('exchangingPairInfo', v => {
                 if (strangerUserId.length === 0) {
                     console.log('Received Stranger SocketId', v)
-                    setStrangerUserId(v.userid)
-                    setStrangerUsername(v.username)
-                    setSendPeerRequest(v.sendPeerRequest)
+                    setStrangerUserId(v.key.userid)
+                    setStrangerUsername(v.key.username)
+                    setSendPeerRequest(v.key.sendPeerRequest)
                 }
             })
 
@@ -65,7 +64,7 @@ export default function ChatPage({ username }) {
                 socket.off('userLeftTheChat')
                 socket.off('waiting')
                 socket.disconnect()
-
+                localStorage.removeItem('socketId')
             }
         }
     }, [socket])

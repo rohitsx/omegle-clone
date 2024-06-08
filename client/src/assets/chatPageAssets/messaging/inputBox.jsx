@@ -1,4 +1,5 @@
 import { useState } from "react";
+import ChangeNewUser from "./changeUser";
 
 export default function InputBox({ socket, setMessage, strangerUserId, username }) {
 
@@ -6,11 +7,10 @@ export default function InputBox({ socket, setMessage, strangerUserId, username 
 
     function sendMessage(e) {
         e.preventDefault()
-
         socket.emit("private message", {
             content: {
                 username: username,
-                message: e.target[0].value,
+                message: messageInputValue,
                 userid: socket.id
             },
             to: strangerUserId
@@ -18,7 +18,7 @@ export default function InputBox({ socket, setMessage, strangerUserId, username 
 
         setMessage(prevMessages => [...prevMessages, {
             username: username,
-            message: e.target[0].value,
+            message: messageInputValue,
         }]);
 
         setMessageInputValue("")
@@ -26,13 +26,15 @@ export default function InputBox({ socket, setMessage, strangerUserId, username 
 
     return (
         <div id="sendMessageBtn">
+            <ChangeNewUser />
             <form onSubmit={sendMessage} id="sendMassage">
                 <input
                     type="text"
                     name="sendMessage"
                     id="sendMessageBox"
-                    value={messageInputValue} onChange={(e) => setMessageInputValue(e.target.value)} />
-                <input type="submit" value="send" id="sendMessageBtn" />
+                    value={messageInputValue}
+                    onChange={(e) => setMessageInputValue(e.target.value)} />
+                <input type="submit" value="Send" id="sendMessageBtn" />
             </form>
         </div>
     )

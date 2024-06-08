@@ -12,7 +12,6 @@ export default function MessagBox({ message, username, socket, setMessage, stran
     useEffect(() => {
         if (socket) {
             socket.on("private message", ({ content, from }) => {
-                console.log("recives pm", content, strangerUserId)
                 if (strangerUserId === from) {
                     setMessage(prevMessages => [...prevMessages, content]);
                 }
