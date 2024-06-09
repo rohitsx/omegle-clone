@@ -1,23 +1,25 @@
-import { useState } from "react"
-import { createBrowserRouter, RouterProvider } from "react-router-dom"
-import SingUp from "./assets/SingUp"
-import ChatPage from "./assets/chatArea/ChatPage"
-import { io } from "socket.io-client";
+import { useState, useEffect } from "react";
+import { createBrowserRouter, RouterProvider, useBeforeUnload } from "react-router-dom";
+import SingUp from "./assets/SingUp";
+import ChatPage from "./assets/ChatPage";
 
-const socket = io("http://localhost:3000", { transports: ['websocket'] });
 
 function App() {
-  const [username, setUsername] = useState('')
 
-  const router = createBrowserRouter([{
-    path: '/',
-    element: <SingUp setUsername={setUsername} socket={socket} />,
-  }, {
-    path: '/chat',
-    element: <ChatPage username={username} socket={socket} />
-  }])
+  const [username, setUsername] = useState(null)
 
-  return <RouterProvider router={router} />
+  const router = createBrowserRouter([
+    {
+      path: '/',
+      element: <SingUp setUsername={setUsername} />,
+    },
+    {
+      path: '/chat',
+      element: <ChatPage username ={username} />
+    }
+  ]);
+
+  return <RouterProvider router={router} />;
 }
 
-export default App
+export default App;
