@@ -1,10 +1,10 @@
 import { useEffect, useState, useRef } from 'react'
 import { io } from 'socket.io-client';
 import { useNavigate } from 'react-router-dom';
-import LocalVideo from './chatPageAssets/videoCall/localVideo';
-import RemoteVideo from './chatPageAssets/videoCall/remoteVideo';
-import MessagBox from './chatPageAssets/messaging/messageBox';
-import InputBox from './chatPageAssets/messaging/inputBox';
+import LocalVideo from '../chatPageAssets/videoCall/localVideo';
+import RemoteVideo from '../chatPageAssets/videoCall/remoteVideo';
+import MessagBox from '../chatPageAssets/messaging/messageBox';
+import InputBox from '../chatPageAssets/messaging/inputBox';
 
 export default function ChatPage({ username }) {
 
@@ -36,12 +36,12 @@ export default function ChatPage({ username }) {
     useEffect(() => {
         if (socket) {
 
-            socket.emit('connectWithStranger', username)
+            socket.emit('connectWithStranger')
 
             socket.on('exchangingPairInfo', v => {
                 if (strangerUserId.length === 0) {
                     console.log('Received Stranger SocketId', v)
-                    setStrangerUserId(v.key.userid)
+                    setStrangerUserId(v.key.pairedUserId)
                     setStrangerUsername(v.key.username)
                     setSendPeerRequest(v.key.sendPeerRequest)
                 }
@@ -52,7 +52,7 @@ export default function ChatPage({ username }) {
                 setStrangerUserId('')
                 setMessage([])
                 console.log(v, 'left the chat, conneting with other user')
-                socket.emit('connectWithStranger', username)
+                socket.emit('connectWithStranger')
             })
 
             socket.on('waiting', v => {

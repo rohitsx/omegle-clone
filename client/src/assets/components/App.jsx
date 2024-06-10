@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { createBrowserRouter, RouterProvider, useBeforeUnload } from "react-router-dom";
-import SingUp from "./assets/SingUp";
-import ChatPage from "./assets/ChatPage";
+import SingUp from "../SingUp";
+import ChatPage from "../ChatPage";
 
 
 function App() {
