@@ -1,7 +1,4 @@
-import { useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import { io } from "socket.io-client";
-
 export default function SingUp({ setUsername }) {
   const naviagte = useNavigate()
 

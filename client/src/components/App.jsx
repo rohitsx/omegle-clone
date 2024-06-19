@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import { createBrowserRouter, RouterProvider, useBeforeUnload } from "react-router-dom";
-import SingUp from "../SingUp";
-import ChatPage from "../ChatPage";
+import SingUp from "./SingUp";
+import ChatPage from "./ChatPage";
 
 
 function App() {
 
   const [username, setUsername] = useState(null)
+  const [updateUser, setUpdateUser] = useState(0)
 
   const router = createBrowserRouter([
     {
@@ -15,7 +16,12 @@ function App() {
     },
     {
       path: '/chat',
-      element: <ChatPage username ={username} />
+      element: <ChatPage 
+      username ={username} 
+      setUsername={setUsername}  
+      updateUser={updateUser}
+      setUpdateUser={setUpdateUser}
+      />
     }
   ]);
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ChangeNewUser from "./changeUser";
 
-export default function InputBox({ socket, setMessage, strangerUserId, username }) {
+export default function InputBox({ socket, setMessage, strangerUserId, username, setUpdateUser }) {
 
     const [messageInputValue, setMessageInputValue] = useState('')
 
@@ -26,7 +26,7 @@ export default function InputBox({ socket, setMessage, strangerUserId, username 
 
     return (
         <div id="sendMessageBtn">
-            <ChangeNewUser />
+            <ChangeNewUser setUpdateUser={setUpdateUser} />
             <form onSubmit={sendMessage} id="sendMassage">
                 <input
                     type="text"
