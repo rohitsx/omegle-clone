@@ -1,7 +1,7 @@
 import { useRef, useEffect } from "react";
 
 
-export default function MessagBox({ message, username, socket, setMessage, strangerUsername, strangerUserId }) {
+export default function MessagBox({ message, username, socket, setMessage, strangerUsername, strangerUserId, connectionStatus }) {
 
     const scrollMessageDiv = useRef(null)
 
@@ -21,11 +21,20 @@ export default function MessagBox({ message, username, socket, setMessage, stran
 
     return (
         <div id="messageBox">
+            {(connectionStatus !== null && message.length === 0) &&(
+                <div id="overlayStatus">
+                    {connectionStatus ? (
+                        <p>{username} is connected with {strangerUsername}</p>
+                    ) : (
+                        <p>Looking For Stranger...</p>
+                    )}
+                </div>
+            )}
             {message.map((item, index) => (
                 item ? (
-                    <p className={item.username === username ? 'right' : 'left'} key={index}>
-                        {item.username === username ? 'you' : strangerUsername}: {item.message}
-                    </p>
+                    <div className={item.username === username ? 'right' : 'left'} key={index}>
+                        {item.message}
+                    </div>
                 ) : null
             ))}
             <div ref={scrollMessageDiv}></div>

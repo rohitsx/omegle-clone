@@ -3,10 +3,10 @@ import LocalVideo from '../assets/videoCall/localVideo';
 import RemoteVideo from '../assets/videoCall/remoteVideo';
 import MessagBox from '../assets/messaging/messageBox';
 import InputBox from '../assets/messaging/inputBox';
-import PageHeading from '../assets/messaging/pageHeading';
 import useSocket from '../hooks/useSocket';
 import usePeerConnection from '../hooks/usePeerConnection';
 import initiatePeerConnection from '../hooks/initiatePeerConnection';
+import ConnectionStatusBar from '../assets/messaging/connectionStatusBar';
 
 export default function ChatPage({ username, setUsername, updateUser, setUpdateUser }) {
 
@@ -33,11 +33,7 @@ export default function ChatPage({ username, setUsername, updateUser, setUpdateU
                 />
             </div>
             <div id='messaging'>
-                <PageHeading
-                    username={username}
-                    stragerUsername={strangerUsername}
-                    connectionStatus={connectionStatus}
-                />
+                <ConnectionStatusBar strangerUsername={strangerUsername} />
                 <MessagBox
                     message={message}
                     username={username}
@@ -45,6 +41,7 @@ export default function ChatPage({ username, setUsername, updateUser, setUpdateU
                     setMessage={setMessage}
                     strangerUsername={strangerUsername}
                     strangerUserId={strangerUserId}
+                    connectionStatus={connectionStatus}
                 />
                 <InputBox
                     socket={socket}
