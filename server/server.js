@@ -3,6 +3,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import { redisClient } from "./src/redisClient.js";
 import { handelSocketConnection } from "./src/socketRoutes.js";
+import 'dotenv/config'
 
 const app = express();
 const port = 3000;
@@ -10,7 +11,7 @@ const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
   cors: {
-    origin: "http://127.0.0.1:5173",
+    origin: process.env.PUBLIC_WEBSOCKET_URL || "http://127.0.0.1:5173"
   }
 });
 
