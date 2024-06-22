@@ -12,7 +12,7 @@ export default function useSocket(username, remoteVideo, setMessage, updateUser)
 
     useEffect(() => {
         if (username) {
-            const newSocket = io( import.meta.env.WEBSOCKET_URL || 'http://localhost:3000', {
+            const newSocket = io( import.meta.env.VITE_APP_WEBSOCKET_URL || 'http://localhost:3000', {
                 transports: ['websocket'],
                 auth: { username: username }
             });
