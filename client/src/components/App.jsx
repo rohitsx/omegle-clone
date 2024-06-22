@@ -25,7 +25,7 @@ function App() {
     }
   ]);
 
-  return <RouterProvider router={router} />;
+  return <createBrowserRouter router={router} />;
 }
 
 export default App;
