@@ -18,7 +18,6 @@ export default function useSocket(username, remoteVideo, setMessage, updateUser)
                 auth: { username: username }
             });
             setSocket(newSocket);
-            console.log("new socket created");
         }
 
         if (updateUser > 0) {
@@ -100,7 +99,6 @@ export default function useSocket(username, remoteVideo, setMessage, updateUser)
             return () => {
                 if (canComponetMount.current && strangerUserId.length > 2) {
                     pairedUserLeftTheChat()
-                    console.log("componet is umountes");
                     console.log("pairedUserLeftTheChat emitted from clean up function");
                 }
             }

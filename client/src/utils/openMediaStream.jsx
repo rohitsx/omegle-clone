@@ -5,7 +5,7 @@ export default async function openMediaStream(localVideo, peerConnection) {
             width: { ideal: 1920 },
             height: { ideal: 1080 }
         },
-        'audio': true
+        'audio': {'echoCancellation': true}
     }
     try {
         const stream = await navigator.mediaDevices.getUserMedia(constraints)
