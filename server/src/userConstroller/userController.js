@@ -13,8 +13,7 @@ export async function processUserPairing(io, socket) {
 
         console.log("selected pair", userPair[0].username, "with", userPair[1].username);
         userPair.forEach(key => {
-            io.to(key.socketId).emit("exchangingPairInfo", key);
-            console.log("emitted", key.username, "userId", key.socketId);
+            io.to(key.socketId).emit("exchangingPairInfo", key);    
         });
 
         await client.hSet("userpairList", userPair[0].socketId + userPair[1].socketId, JSON.stringify(userPair));
@@ -28,11 +27,12 @@ export async function processUserPairing(io, socket) {
     }
 }
 
-export async function piredUserLeftTheChat(v, socket, io) {
+export async function pairedUserLeftTheChat(v, socket, io) {
     const pairId = v.sendPeerRequest ? socket.id+v.to : v.to+socket.id;
+    console.log("pairedUserLeftTheChat", pairId);
     io.to(v.to).emit("userLeftTheChat", v);
     try {
-        await client.hDel("userpairList", pairId);
+        await client.hDel("userpairList", pairId); 
         console.log(`pair ${pairId} removed from Redis`);
     } catch (err) {
         console.log("err removing pair", err);
@@ -48,23 +48,3 @@ export async function soloUserLeftTheChat(socket) {
         console.log("user don't exits in redis", err);
     }
 }
-
-// export async function handelDisconnect(io, socket) {
-//     console.log("socket disconnected");
-//     try {
-//         const pairsStr = await client.hGet("userpairList", pairUserId);
-//         const pairs = JSON.parse(pairsStr);
-//         await Promise.all([
-//             client.hDel("userpairList", pairUserId),
-//             client.hDel("userIdList", socket.id),
-//         ]);
-
-//         client.lRem("users", 1, JSON.stringify({ 'socketId': socket.id, 'username': socket.username }))
-//         console.log(`User ${socket.username} removed from Redis`);
-//         let to;
-//         pairs[0].socketId === socket.id ? to = pairs[1].socketId : to = pairs[0].socketId;
-//         io.to(to).emit("userLeftTheChat", socket.username);
-//     } catch (err) {
-//         console.error("Error removing user:", err);
-//     }
-// }

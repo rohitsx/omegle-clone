@@ -16,7 +16,6 @@ export default function usePeerConnection(socket, strangerUserId) {
                         icecandidate: event.candidate,
                         to: strangerUserId
                     })
-                    console.log("send ice")
                 }
             })
 
@@ -24,7 +23,6 @@ export default function usePeerConnection(socket, strangerUserId) {
                 if (message) {
                     try {
                         await peerConnection.addIceCandidate(message)
-                        console.log("Recived ice")
                     } catch (e) {
                         console.error('Error adding received ice candidate', e)
                     }

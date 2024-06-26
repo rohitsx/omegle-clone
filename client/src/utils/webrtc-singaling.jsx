@@ -11,7 +11,7 @@ export function webrtcSingaling(socket, peerConnection, strangerUserId,) {
             to: strangerUserId
         })
 
-        console.log("offer send", offer, "to", strangerUserId)
+        console.log("offer send to", strangerUserId)
     }
 
     async function handelOffer(offer) {
@@ -27,11 +27,11 @@ export function webrtcSingaling(socket, peerConnection, strangerUserId,) {
             answer: peerAnswer,
             to: strangerUserId
         })
-        console.log("answer send", peerAnswer)
+        console.log("answer send")
     }
 
     async function handelAnswer(answer) {
-        console.log("recived answer", answer)
+        console.log("recived answer")
         const remoteDesc = new RTCSessionDescription(answer)
         await peerConnection.setRemoteDescription(remoteDesc)
     }

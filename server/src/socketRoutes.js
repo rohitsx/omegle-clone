@@ -1,8 +1,8 @@
-import { processUserPairing, soloUserLeftTheChat, piredUserLeftTheChat } from "./userConstroller/userController.js";
+import { processUserPairing, soloUserLeftTheChat, pairedUserLeftTheChat } from "./userConstroller/userController.js";
 
 export function handelSocketConnection(io, socket) {
     socket.on("connectWithStranger", () => processUserPairing(io, socket));
-    socket.on("piredUserLeftTheChat", (v) => piredUserLeftTheChat(v, socket, io));
+    socket.on("pairedUserLeftTheChat", (v) => pairedUserLeftTheChat(v, socket, io));
     socket.on("soloUserLeftTheChat", () => soloUserLeftTheChat(socket));
 
     socket.on("private message", ({ content, to }) => {
