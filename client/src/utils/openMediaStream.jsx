@@ -2,8 +2,8 @@ export default async function openMediaStream(localVideo, peerConnection) {
     console.log("open media stream");
     const constraints = {
         'video': {
-            width: { ideal: 1920 },
-            height: { ideal: 1080 }
+            width: { max: 1920 },
+            height: { max: 1080 }
         },
         'audio': {
             echoCancellation: true, 
