@@ -12,6 +12,6 @@ export default function RemoteVideo({ remoteVideo, peerConnection}) {
         }
     }, [peerConnection])
 
-    return <video id="remoteVideo" ref={remoteVideo} autoPlay playsInline controls={false} muted></video>
+    return <video id="remoteVideo" ref={remoteVideo} autoPlay playsInline controls={false}></video>
 
 }

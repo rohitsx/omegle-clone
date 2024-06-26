@@ -19,5 +19,5 @@ export default function LocalVideo({ localVideo, peerConnection }) {
     }, [peerConnection])
 
 
-    return <video id="localVideo" ref={localVideo} autoPlay playsInline controls={false}></video>
+    return <video id="localVideo" ref={localVideo} autoPlay playsInline controls={false} muted></video>
 }
