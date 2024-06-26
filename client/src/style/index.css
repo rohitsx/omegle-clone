@@ -3,6 +3,11 @@
   color-scheme: light dark;
   color: #fff;
   background-color: #121212;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
 }
 
 #signupPage {
@@ -176,6 +181,7 @@
   color: #fff;
   margin-right: 10px;
   margin-left: 10px;
+  width: 100%;
 }
 
 #changeNewUser,
@@ -231,17 +237,11 @@
 @media screen and (max-width: 547px) {
 
   /* genral */
-
   #chatPage {
     flex-direction: column;
     justify-content: space-around;
     align-items: center;
-    max-height: 100vh;
-  }
-
-  #chatPage h1 {
-    width: 100%;
-    display: none;
+    max-height: 96.5vh;
   }
 
   /* video call  */
