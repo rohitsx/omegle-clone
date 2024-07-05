@@ -7,15 +7,19 @@ import useSocket from '../hooks/useSocket';
 import usePeerConnection from '../hooks/usePeerConnection';
 import initiatePeerConnection from '../hooks/initiatePeerConnection';
 import ConnectionStatusBar from '../assets/messaging/connectionStatusBar';
+import ChangeCam from '../hooks/useChangeCam';
 
 export default function ChatPage({ username, setUsername, updateUser, setUpdateUser }) {
 
     const [message, setMessage] = useState([])
+    const [peerConnection, setPeerConnection] = useState(null)
+    const [ChangeCamOverly, setChangeCamOverly] = useState(true)
     const localVideo = useRef(null)
     const remoteVideo = useRef(null)
 
-    const { socket, strangerUserId, strangerUsername, sendPeerRequest, connectionStatus } = useSocket(username, remoteVideo.current, setMessage, updateUser)
-    const peerConnection = usePeerConnection(socket, strangerUserId)
+    const { socket, strangerUserId, strangerUsername, sendPeerRequest, connectionStatus } = useSocket(username, remoteVideo.current, setMessage, updateUser, peerConnection, setPeerConnection)
+    usePeerConnection(socket, strangerUserId, setPeerConnection, peerConnection)
+
 
     initiatePeerConnection(socket, peerConnection, sendPeerRequest, strangerUserId)
 
@@ -23,13 +27,21 @@ export default function ChatPage({ username, setUsername, updateUser, setUpdateU
 
         <div id='chatPage'>
             <div id='videoCall'>
+                <ChangeCam
+                    peerConnection={peerConnection}
+                    localVideo={localVideo.current}
+                    ChangeCamOverly={ChangeCamOverly}
+                    setChangeCamOverly={setChangeCamOverly}
+                />
                 <LocalVideo
                     localVideo={localVideo}
                     peerConnection={peerConnection}
+                    setChangeCamOverly={setChangeCamOverly}
                 />
                 <RemoteVideo
                     remoteVideo={remoteVideo}
                     peerConnection={peerConnection}
+                    setChangeCamOverly={setChangeCamOverly}
                 />
             </div>
             <div id='messaging'>

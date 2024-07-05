@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect} from "react";
 
 
-export default function usePeerConnection(socket, strangerUserId) {
-    const [peerConnection, setPeerConnection] = useState(null)
+export default function usePeerConnection(socket, strangerUserId, setPeerConnection, peerConnection) {
     useEffect(() => {
         const configuration = { 'iceServers': [{ 'urls': 'stun:stun.l.google.com:19302' }] }
         setPeerConnection(new RTCPeerConnection(configuration))
@@ -30,6 +29,4 @@ export default function usePeerConnection(socket, strangerUserId) {
             })
         }
     }, [peerConnection, strangerUserId])
-
-    return peerConnection
 }

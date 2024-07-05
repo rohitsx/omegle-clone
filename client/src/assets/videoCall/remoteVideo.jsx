@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect } from "react"
 
-export default function RemoteVideo({ remoteVideo, peerConnection}) {
+export default function RemoteVideo({ remoteVideo, peerConnection, setChangeCamOverly }) {
 
     useEffect(() => {
         if (peerConnection) {
@@ -12,6 +12,10 @@ export default function RemoteVideo({ remoteVideo, peerConnection}) {
         }
     }, [peerConnection])
 
-    return <video id="remoteVideo" ref={remoteVideo} autoPlay playsInline controls={false}></video>
+    function handelCam() {
+        setChangeCamOverly(true)
+    }
+
+    return <video id="remoteVideo" ref={remoteVideo}  onClick={handelCam} autoPlay playsInline controls={false}></video>
 
 }

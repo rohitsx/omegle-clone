@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react"
 import { io } from 'socket.io-client';
 import { useNavigate } from 'react-router-dom';
+import usePeerConnection from "./usePeerConnection";
 
-export default function useSocket(username, remoteVideo, setMessage, updateUser) {
+export default function useSocket(username, remoteVideo, setMessage, updateUser, peerConnection, setPeerConnection) {
     const [socket, setSocket] = useState(null)
     const [strangerUserId, setStrangerUserId] = useState('')
     const [strangerUsername, setStrangerUsername] = useState(null)
@@ -13,7 +14,7 @@ export default function useSocket(username, remoteVideo, setMessage, updateUser)
 
     useEffect(() => {
         if (username) {
-            const newSocket = io(import.meta.env.VITE_APP_WEBSOCKET_URL || 'http://localhost:3000', {  
+            const newSocket = io(import.meta.env.VITE_APP_WEBSOCKET_URL || 'http://localhost:3000', {
                 transports: ['websocket'],
                 auth: { username: username }
             });
@@ -53,7 +54,12 @@ export default function useSocket(username, remoteVideo, setMessage, updateUser)
         setConnectionStatus(false)
         remoteVideo.srcObject = null
         canComponetMount.current = false
-        
+
+        if (peerConnection) return
+        setPeerConnection(null)
+        usePeerConnection(socket, strangerUserId, setPeerConnection, peerConnection)
+
+
     }
     function userLeftTheChat(v) {
         clearStates(v)
