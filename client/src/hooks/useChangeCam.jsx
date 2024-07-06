@@ -5,14 +5,17 @@ export default function ChangeCam({ peerConnection, localVideo, ChangeCamOverly,
     const [devices, setDevices] = useState([]);
     const [selectedDeviceId, setSelectedDeviceId] = useState(null);
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [localStream, setLocalStream] = useState(null);
     const videoPreview = useRef(null);
     const dropdownRef = useRef(null);
 
     async function changeCam() {
+        setChangeCamOverly(false)
         if (selectedDeviceId && localVideo) {
             try {
                 const stream = await openMediaStream(selectedDeviceId);
                 localVideo.srcObject = stream;
+                setLocalStream(stream);
                 const newVideoTrack = stream.getVideoTracks()[0];
                 const sender = peerConnection.getSenders().find(s => s.track.kind === 'video');
                 if (sender) {
@@ -22,7 +25,6 @@ export default function ChangeCam({ peerConnection, localVideo, ChangeCamOverly,
                 console.error("Error changing camera:", error);
             }
         }
-        setChangeCamOverly(false);
     }
 
     async function changePreviewCam(deviceId) {
@@ -43,16 +45,23 @@ export default function ChangeCam({ peerConnection, localVideo, ChangeCamOverly,
     }
 
     useEffect(() => {
-        getConnectedDevices('videoinput')
-            .then(devices => setDevices(devices))
-            .then(() => openMediaStream())
-            .then(stream => {
-                if (videoPreview.current) {
-                    videoPreview.current.srcObject = stream;
-                }
-            })
-            .catch(error => console.error("Error setting up devices:", error));
-    }, []);
+        if (ChangeCamOverly) {
+            getConnectedDevices('videoinput')
+                .then(devices => setDevices(devices))
+                .then(() => openMediaStream())
+                .then(stream => {
+                    if (videoPreview.current) {
+                        videoPreview.current.srcObject = stream;
+                        setLocalStream(stream);
+                    }
+                })
+                .catch(error => console.error("Error setting up devices:", error));
+
+            return () => {
+                localStream && localStream.getVideoTracks()[0].stop()
+            }
+        }
+    }, [ChangeCamOverly]);
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -67,6 +76,16 @@ export default function ChangeCam({ peerConnection, localVideo, ChangeCamOverly,
         };
     }, []);
 
+    useEffect(() => {
+        if (localStream) {
+            console.log("Starting local stream");
+            return () => {
+                console.log("Stopping local stream");
+                localStream.getVideoTracks()[0].stop()
+            }
+        }
+    }, [localStream])
+
     const toggleDropdown = () => {
         setDropdownOpen(!dropdownOpen);
     };
@@ -77,14 +96,14 @@ export default function ChangeCam({ peerConnection, localVideo, ChangeCamOverly,
         <div id="changeCamOverlay">
             <div id="changeCamContainer">
                 <video id="videoPreview" ref={videoPreview} autoPlay playsInline controls={false} muted></video>
-                
+
                 <div id="dropdown" ref={dropdownRef} className={dropdownOpen ? "active" : ""}>
                     <button className="dropbtn" onClick={toggleDropdown}>Select Camera</button>
                     <div id="dropdown-content">
                         {devices.map((device, index) => (
-                            <div 
-                                className="dropdown-item" 
-                                key={index} 
+                            <div
+                                className="dropdown-item"
+                                key={index}
                                 onClick={() => {
                                     changePreviewCam(device.deviceId);
                                     setDropdownOpen(false);
@@ -95,7 +114,7 @@ export default function ChangeCam({ peerConnection, localVideo, ChangeCamOverly,
                         ))}
                     </div>
                 </div>
-                
+
                 <button id="changeCamBtn" onClick={changeCam}>Apply Changes</button>
             </div>
         </div>

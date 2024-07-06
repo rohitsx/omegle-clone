@@ -13,7 +13,7 @@ export default function ChatPage({ username, setUsername, updateUser, setUpdateU
 
     const [message, setMessage] = useState([])
     const [peerConnection, setPeerConnection] = useState(null)
-    const [ChangeCamOverly, setChangeCamOverly] = useState(true)
+    const [ChangeCamOverly, setChangeCamOverly] = useState(false)
     const localVideo = useRef(null)
     const remoteVideo = useRef(null)
 

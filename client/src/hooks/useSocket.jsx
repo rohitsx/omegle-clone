@@ -90,6 +90,7 @@ export default function useSocket(username, remoteVideo, setMessage, updateUser,
             window.addEventListener('beforeunload', () => {
 
                 socket.emit("soloUserLeftTheChat")
+                
             })
             return () => {
                 socket.emit("soloUserLeftTheChat")
