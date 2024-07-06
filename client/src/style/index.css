@@ -220,62 +220,126 @@
 
 /* changeCam css */
 
-
-#changeCamContainer {
+#changeCamOverlay {
   position: fixed;
-  top: 50%;
-  left: 50%;
-  width: 60%;
-  height: 70%;
-  background-color: #121212;
-  z-index: 999;
-  transform: translate(-50%, -50%);
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
-.dropbtn {
-  background-color: #04AA6D;
-  color: white;
-  padding: 16px;
-  font-size: 16px;
-  border: none;
+#changeCamContainer {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 400px;
+}
+
+#videoPreview {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  background-color: #000;
+  object-fit: cover;
 }
 
 #dropdown {
+  width: 100%;
+  margin-bottom: 20px;
   position: relative;
-  display: inline-block;
+}
+
+.dropbtn {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  padding: 12px 20px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+  text-align: center;
+}
+
+.dropbtn:hover, .dropbtn:focus {
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 #dropdown-content {
   display: none;
   position: absolute;
-  background-color: #f1f1f1;
-  min-width: 160px;
-  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  background-color: rgba(255, 255, 255, 0.9);
+  min-width: 100%;
+  border-radius: 5px;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 5px;
   z-index: 1;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+#dropdown.active #dropdown-content {
+  display: block;
 }
 
 .dropdown-item {
-  color: black;
+  color: #333;
   padding: 12px 16px;
   text-decoration: none;
   display: block;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .dropdown-item:hover {
-  background-color: #ddd;
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
-#dropdown:hover #dropdown-content {
-  display: block;
+#changeCamBtn {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 2% 3%;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
-#dropdown:hover .dropbtn {
-  background-color: #3e8e41;
+#changeCamBtn:hover {
+  background-color: #45a049;
 }
 
+@media (max-width: 480px) {
+  #changeCamContainer {
+      padding: 20px;
+  }
 
-#videoPreview{
-  width: 30%;
+  .dropbtn, #changeCamBtn {
+      padding: 10px 16px;
+      font-size: 14px;
+  }
+
+  .dropdown-item {
+      padding: 10px 14px;
+      font-size: 14px;
+  }
 }
 
 @media screen and (max-width: 547px) {
@@ -342,5 +406,9 @@
     cursor: pointer;
   }
 
+  #changeCamContainer{
+    width: 70%;
+    height: 60%;
+  }
 
 }
