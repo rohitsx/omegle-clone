@@ -9,11 +9,12 @@ import initiatePeerConnection from '../hooks/initiatePeerConnection';
 import ConnectionStatusBar from '../assets/messaging/connectionStatusBar';
 import ChangeCam from '../hooks/useChangeCam';
 
-export default function ChatPage({ username, setUsername, updateUser, setUpdateUser }) {
+export default function ChatPage({ username, setUsername }) {
 
     const [message, setMessage] = useState([])
     const [peerConnection, setPeerConnection] = useState(null)
     const [ChangeCamOverly, setChangeCamOverly] = useState(false)
+    const [updateUser, setUpdateUser] = useState(0)
     const localVideo = useRef(null)
     const remoteVideo = useRef(null)
 

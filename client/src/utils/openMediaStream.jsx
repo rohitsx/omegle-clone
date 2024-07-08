@@ -1,5 +1,4 @@
 export default async function openMediaStream(cameraId) {
-    console.log("open media stream");
     const constraints = {
         'video': {
             deviceId: cameraId || null,

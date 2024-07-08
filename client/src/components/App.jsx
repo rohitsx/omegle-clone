@@ -7,7 +7,6 @@ import ChatPage from "./ChatPage";
 function App() {
 
   const [username, setUsername] = useState(null)
-  const [updateUser, setUpdateUser] = useState(0)
 
   const router = createBrowserRouter([
     {
@@ -19,8 +18,6 @@ function App() {
       element: <ChatPage 
       username ={username} 
       setUsername={setUsername}  
-      updateUser={updateUser}
-      setUpdateUser={setUpdateUser}
       />
     }
   ]);

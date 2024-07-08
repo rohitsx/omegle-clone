@@ -7,7 +7,6 @@ export default function RemoteVideo({ remoteVideo, peerConnection, setChangeCamO
             peerConnection.addEventListener('track', async (event) => {
                 const [remoteStream] = event.streams
                 remoteVideo.current.srcObject = remoteStream
-                console.log("added remote stream")
             })
         }
     }, [peerConnection])

@@ -78,9 +78,7 @@ export default function ChangeCam({ peerConnection, localVideo, ChangeCamOverly,
 
     useEffect(() => {
         if (localStream) {
-            console.log("Starting local stream");
             return () => {
-                console.log("Stopping local stream");
                 localStream.getVideoTracks()[0].stop()
             }
         }
