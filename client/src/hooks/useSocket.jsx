@@ -3,12 +3,14 @@ import { io } from 'socket.io-client';
 import { useNavigate } from 'react-router-dom';
 import usePeerConnection from "./usePeerConnection";
 
-export default function useSocket(username, remoteVideo, setMessage, updateUser, peerConnection, setPeerConnection) {
+export default function useSocket(username, remoteVideo, setMessage, updateUser, peerConnection, setPeerConnection, prevUpdateUser) {
     const [socket, setSocket] = useState(null)
     const [strangerUserId, setStrangerUserId] = useState('')
     const [strangerUsername, setStrangerUsername] = useState(null)
     const [sendPeerRequest, setSendPeerRequest] = useState(null)
     const [connectionStatus, setConnectionStatus] = useState(false)
+    const [dummySendPeerRequest, setDummySendPeerRequest] = useState(null)
+    const [dummyStrangerUserId, setDummyStrangerUserId] = useState(null)
     const nav = useNavigate()
     const canComponetMount = useRef(true)
 
@@ -25,12 +27,12 @@ export default function useSocket(username, remoteVideo, setMessage, updateUser,
 
     }, [username])
 
-    async function pairedUserLeftTheChat() {
+    async function pairedUserLeftTheChat(id, request) {
         await socket.emit("pairedUserLeftTheChat", {
-            'to': strangerUserId,
-            'sendPeerRequest': sendPeerRequest
+            'to': id,
+            'sendPeerRequest': request
         })
-        clearStates()
+        console.log('pairedUserLeftTheChat emitted');
     }
 
     function exchangingPairInfo(v) {
@@ -82,11 +84,25 @@ export default function useSocket(username, remoteVideo, setMessage, updateUser,
     useEffect(() => {
         if (updateUser > 0) {
             if (strangerUsername) {
-                socket.emit('connectWithStranger')
-                pairedUserLeftTheChat()
+                setDummySendPeerRequest(sendPeerRequest)
+                setDummyStrangerUserId(strangerUserId)
+                userLeftTheChat()
             }
         }
+
+        return () => {
+            setDummySendPeerRequest(null)
+            setDummyStrangerUserId(null)
+        }
     }, [updateUser])
+
+    useEffect(() => {
+        if (dummyStrangerUserId) {
+            if (strangerUsername && prevUpdateUser.current < updateUser) {
+                pairedUserLeftTheChat(dummyStrangerUserId, dummySendPeerRequest)
+            }
+        }
+    }, [dummySendPeerRequest, dummyStrangerUserId, strangerUsername])
 
 
 
@@ -109,11 +125,11 @@ export default function useSocket(username, remoteVideo, setMessage, updateUser,
         if (strangerUsername) {
             window.addEventListener('beforeunload', () => {
                 canComponetMount.current = false
-                pairedUserLeftTheChat()
+                pairedUserLeftTheChat(strangerUserId, sendPeerRequest)
             })
             return () => {
                 if (canComponetMount.current && strangerUsername) {
-                    pairedUserLeftTheChat()
+                    pairedUserLeftTheChat(strangerUserId, sendPeerRequest)
                     console.log("pairedUserLeftTheChat emitted from clean up function");
                 }
             }

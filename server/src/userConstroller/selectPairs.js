@@ -15,13 +15,8 @@ export async function selectPairsFromDb(len) {
         let user2 = await client.lRange("users", user2Index, user2Index);
 
         if (user1 && user2) {
-            try {
-                const x = await client.lRem("users", 1, user1[0]);
-                const y = await client.lRem("users", 1, user2[0]);
-                return x && y;
-            } catch (error) {
-                console.log("err removing user from redis", error);
-            }
+            const x = await client.lRem("users", 1, user1[0]);
+            const y = await client.lRem("users", 1, user2[0]);
             console.log("user1", JSON.parse(user1[0]).username, "user2", JSON.parse(user2[0]).username);
             if (x === 1 && y === 1) {
                 console.log("removed", JSON.parse(user1[0]).username, "and", JSON.parse(user2[0]).username, "from redis");

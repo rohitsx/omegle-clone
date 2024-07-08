@@ -3,7 +3,6 @@ import { selectPairsFromDb } from "./selectPairs.js";
 import { addUserTODb } from "./addUserToDb.js";
 
 export async function processUserPairing(io, socket) {
-    console.log("connected with strager emitted for", socket.username);
     try {
         const userLen = await addUserTODb(socket);
         if (userLen < 2) {
@@ -11,6 +10,8 @@ export async function processUserPairing(io, socket) {
         }
 
         const userPair = await selectPairsFromDb(userLen);
+
+        console.log("userPair", userPair )
 
         if (userPair[0].username === userPair[1].username) {
             throw new Error(`user ${userPair[0].username} and ${userPair[1].username} are same`);
@@ -26,7 +27,7 @@ export async function processUserPairing(io, socket) {
             console.log(err.message);
         } else {
             socket.emit("userLeftTheChat")
-            console.error("err selecting pairs in userCOntroller.js");
+            console.error("err selecting pairs in userCOntroller.js", err);
         }
     }
 }

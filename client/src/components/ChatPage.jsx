@@ -15,11 +15,12 @@ export default function ChatPage({ username, setUsername }) {
     const [peerConnection, setPeerConnection] = useState(null)
     const [ChangeCamOverly, setChangeCamOverly] = useState(false)
     const [updateUser, setUpdateUser] = useState(0)
+    const prevUpdateUser = useRef(0)
     const localVideo = useRef(null)
     const remoteVideo = useRef(null)
 
-    const { socket, strangerUserId, strangerUsername, sendPeerRequest, connectionStatus } = useSocket(username, remoteVideo.current, setMessage, updateUser, peerConnection, setPeerConnection)
-    usePeerConnection(socket, strangerUserId, setPeerConnection, peerConnection)
+    const { socket, strangerUserId, strangerUsername, sendPeerRequest, connectionStatus } = useSocket(username, remoteVideo.current, setMessage, updateUser, peerConnection, setPeerConnection, prevUpdateUser)
+    usePeerConnection(socket, strangerUserId, setPeerConnection, peerConnection, updateUser)
 
 
     initiatePeerConnection(socket, peerConnection, sendPeerRequest, strangerUserId)
@@ -64,6 +65,7 @@ export default function ChatPage({ username, setUsername }) {
                     strangerUserId={strangerUserId}
                     username={username}
                     strangerUsername={strangerUsername}
+                    prevUpdateUser={prevUpdateUser}
                 />
             </div>
         </div>

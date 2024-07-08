@@ -8,7 +8,7 @@ export  async function addUserTODb(socket) {
             "username": socket.username
         }));
 
-        console.log(socket.username, "added", "userId: ", socket.id);
+        console.log(socket.username, "added", "userId:", socket.id);
         return await client.lLen("users");
     } catch (err) {
         console.error("Error accessing db:", err);

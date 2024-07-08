@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function InputBox({ socket, setMessage, strangerUserId, username, setUpdateUser }) {
+export default function InputBox({ socket, setMessage, strangerUserId, username, setUpdateUser, prevUpdateUser }) {
 
     const [messageInputValue, setMessageInputValue] = useState('')
 
@@ -24,7 +24,10 @@ export default function InputBox({ socket, setMessage, strangerUserId, username,
 
     function getNewUser(e) {
         e.preventDefault()
-        setUpdateUser(prev => prev + 1)
+        setUpdateUser(prev => {
+            prevUpdateUser.current = prev
+            return prev + 1
+        })
     }
 
     return (
