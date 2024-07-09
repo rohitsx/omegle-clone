@@ -1,5 +1,4 @@
 import { useEffect} from "react";
-import { addUserTODb } from "../../../server/src/userConstroller/addUserToDb";
 
 
 export default function usePeerConnection(socket, strangerUserId, setPeerConnection, peerConnection, updateUser) {
