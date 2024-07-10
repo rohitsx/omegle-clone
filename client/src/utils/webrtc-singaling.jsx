@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 
 export function webrtcSingaling(socket, peerConnection, strangerUserId,) {
     const [peerAnswer, setpeerAnswer] = useState(null)
-    
+
     async function sendOffer() {
         const offer = await peerConnection.createOffer();
         await peerConnection.setLocalDescription(offer)
@@ -31,9 +31,13 @@ export function webrtcSingaling(socket, peerConnection, strangerUserId,) {
     }
 
     async function handelAnswer(answer) {
-        console.log("recived answer")
-        const remoteDesc = new RTCSessionDescription(answer)
-        await peerConnection.setRemoteDescription(remoteDesc)
+        try {
+            console.log("recived answer", '\n', "signaling state", peerConnection.signalingState);
+            const remoteDesc = new RTCSessionDescription(answer)
+            await peerConnection.setRemoteDescription(remoteDesc);
+        } catch (err) {
+            console.log("answer error", err, "\n", "signaling state", peerConnection.signalingState);
+        }
     }
 
     useEffect(() => {

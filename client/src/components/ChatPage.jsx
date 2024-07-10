@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import LocalVideo from '../assets/videoCall/localVideo';
 import RemoteVideo from '../assets/videoCall/remoteVideo';
 import MessagBox from '../assets/messaging/messageBox';
@@ -15,11 +15,13 @@ export default function ChatPage({ username, setUsername }) {
     const [peerConnection, setPeerConnection] = useState(null)
     const [ChangeCamOverly, setChangeCamOverly] = useState(false)
     const [updateUser, setUpdateUser] = useState(0)
+    const [stream, setStream] = useState(null)
     const prevUpdateUser = useRef(0)
     const localVideo = useRef(null)
     const remoteVideo = useRef(null)
 
-    const { socket, strangerUserId, strangerUsername, sendPeerRequest, connectionStatus } = useSocket(username, remoteVideo.current, setMessage, updateUser, peerConnection, setPeerConnection, prevUpdateUser)
+    const { socket, strangerUserId, strangerUsername, sendPeerRequest, connectionStatus } = useSocket(
+        username, remoteVideo.current, setMessage, updateUser, peerConnection, setPeerConnection, prevUpdateUser)
     usePeerConnection(socket, strangerUserId, setPeerConnection, peerConnection, updateUser)
 
 
@@ -39,6 +41,7 @@ export default function ChatPage({ username, setUsername }) {
                     localVideo={localVideo}
                     peerConnection={peerConnection}
                     setChangeCamOverly={setChangeCamOverly}
+                    setStream={setStream}
                 />
                 <RemoteVideo
                     remoteVideo={remoteVideo}

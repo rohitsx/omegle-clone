@@ -11,7 +11,10 @@ export default function usePeerConnection(socket, strangerUserId, setPeerConnect
     }, [])
 
     useEffect(() => {
-        if (updateUser > 0) makePeerConnection()
+        if (updateUser > 0) {
+            peerConnection && peerConnection.close()
+            makePeerConnection()
+        }
     }, [])
 
     useEffect(() => {        
