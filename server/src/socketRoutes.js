@@ -10,8 +10,6 @@ export function handelSocketConnection(io, socket) {
             content: content,
             from: socket.id,
         });
-
-        console.log("emited message", content, "to", to);
     });
 
     // exchanging video call data(offer and answer)

@@ -10,16 +10,16 @@ export async function processUserPairing(io, socket) {
         }
 
         const userPair = await selectPairsFromDb(userLen);
-
-        console.log("userPair", userPair )
-
-        if (userPair[0].username === userPair[1].username) {
-            throw new Error(`user ${userPair[0].username} and ${userPair[1].username} are same`);
+        if (userPair) {
+            if (userPair[0].username === userPair[1].username) {
+                console.log(`user ${userPair[0].username} and ${userPair[1].username} are same`);
+                await client.lRem("users", 1, `{"socketId":"${userPair[0].socketId}","username":"${userPair[0].username}}`);
+            }
+        } else {
+            throw new Error(`not enough users to pair ${socket.username}`);
         }
+        userPair.forEach(key => io.to(key.socketId).emit("exchangingPairInfo", key));
 
-        console.log("selected pair", userPair[0].username, "with", userPair[1].username);
-        userPair.forEach(key =>  io.to(key.socketId).emit("exchangingPairInfo", key));
-        
         await client.hSet("userpairList", userPair[0].socketId + userPair[1].socketId, JSON.stringify(userPair));
     } catch (err) {
         if (err.message === `not enough users to pair ${socket.username}`) {
@@ -34,10 +34,10 @@ export async function processUserPairing(io, socket) {
 
 export async function pairedUserLeftTheChat(v, socket, io) {
     const pairId = v.sendPeerRequest ? socket.id + v.to : v.to + socket.id;
-    console.log(socket.username, "left from the", "pairid:", pairId);
     io.to(v.to).emit("userLeftTheChat", v);
     try {
-        await client.hDel("userpairList", pairId);
+        const ckeck = await client.hDel("userpairList", pairId);
+        if (ckeck === 1) console.log(socket.username, "left from the", "pairid:", pairId);
     } catch (err) {
         console.log("err removing pair", err);
     }

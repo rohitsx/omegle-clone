@@ -10,8 +10,13 @@ export default function initiatePeerConnection(socket, peerConnection, sendPeerR
             if (sendPeerRequest) {
                 sendOffer()
                 socket.on("answer", handelAnswer)
-            }else {
+            } else {
                 socket.on("offer", handelOffer)
+            }
+            
+            return () => {
+                socket.off("answer", handelAnswer)
+                socket.off("offer", handelOffer)
             }
         }
     }, [strangerUserId])

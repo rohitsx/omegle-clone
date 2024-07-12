@@ -1,23 +1,38 @@
-import { useEffect} from "react";
+import { useEffect } from "react";
 
 
 export default function usePeerConnection(socket, strangerUserId, setPeerConnection, peerConnection, updateUser) {
-    function makePeerConnection(params) {
+
+    function setPcInstance() {
         const configuration = { 'iceServers': [{ 'urls': 'stun:stun.l.google.com:19302' }] }
-        setPeerConnection(new RTCPeerConnection(configuration))
+        const pcInstance = new RTCPeerConnection(configuration)
+        setPeerConnection(pcInstance)
+        return pcInstance
     }
+
     useEffect(() => {
-        makePeerConnection()
+        const pcInstance = setPcInstance()
+
+        return () => {
+            pcInstance.close()
+            console.log("peerConenction closed");
+            setPeerConnection(null)
+        }
     }, [])
 
     useEffect(() => {
         if (updateUser > 0) {
-            peerConnection && peerConnection.close()
-            makePeerConnection()
-        }
-    }, [])
+            const pcInstance = setPcInstance()
 
-    useEffect(() => {        
+            return () => {
+                pcInstance.close()
+                console.log("peerConenction closed from useEffect");
+                setPeerConnection(null)
+            }
+        }
+    }, [updateUser])
+
+    useEffect(() => {
         if (peerConnection && socket) {
             peerConnection.addEventListener('icecandidate', event => {
                 if (event.candidate) {

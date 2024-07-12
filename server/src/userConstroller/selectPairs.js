@@ -17,10 +17,7 @@ export async function selectPairsFromDb(len) {
         if (user1 && user2) {
             const x = await client.lRem("users", 1, user1[0]);
             const y = await client.lRem("users", 1, user2[0]);
-            console.log("user1", JSON.parse(user1[0]).username, "user2", JSON.parse(user2[0]).username);
             if (x === 1 && y === 1) {
-                console.log("removed", JSON.parse(user1[0]).username, "and", JSON.parse(user2[0]).username, "from redis");
-
                 user1 = JSON.parse(user1[0]);
                 user2 = JSON.parse(user2[0]);
 
@@ -37,9 +34,10 @@ export async function selectPairsFromDb(len) {
                     strangerUsername: user1.username,
                 };
                 const users = [user1WithUpdates, user2WithUpdates];
+                console.log("selected pair", users[0].username, "with", users[1].username);
                 return users;
             } else {
-                console.log(console.log("unable to remove user1", JSON.parse(user1[0]).username, "user2", JSON.parse(user2[0]).username));
+                console.log("unable to remove user1", JSON.parse(user1[0]).username, "user2", JSON.parse(user2[0]).username);
             }
         }
     } catch (err) {

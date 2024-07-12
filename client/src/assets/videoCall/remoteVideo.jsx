@@ -8,13 +8,15 @@ export default function RemoteVideo({ remoteVideo, peerConnection, setChangeCamO
                 const [remoteStream] = event.streams
                 remoteVideo.current.srcObject = remoteStream
             })
+
+            return () => {
+                if(remoteVideo.current) remoteVideo.current.srcObject = null
+            }
         }
     }, [peerConnection])
 
-    function handelCam() {
-        setChangeCamOverly(true)
-    }
-
-    return <video id="remoteVideo" ref={remoteVideo}  onClick={handelCam} autoPlay playsInline controls={false}></video>
+    return <video id="remoteVideo"
+        ref={remoteVideo} onClick={() => setChangeCamOverly(true)} autoPlay playsInline controls={false}
+    ></video>
 
 }
