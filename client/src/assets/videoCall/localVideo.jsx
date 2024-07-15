@@ -4,7 +4,6 @@ import openMediaStream from "../../utils/openMediaStream"
 export default function LocalVideo({ localVideo, peerConnection, setChangeCamOverly, setStream, stream, selectedDeviceId }) {
 
 
-
     useEffect(() => {
 
         if (peerConnection) {

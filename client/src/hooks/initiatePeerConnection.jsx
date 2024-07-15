@@ -19,5 +19,5 @@ export default function initiatePeerConnection(socket, peerConnection, sendPeerR
                 socket.off("offer", handelOffer)
             }
         }
-    }, [strangerUserId])
+    }, [ strangerUserId])
 }

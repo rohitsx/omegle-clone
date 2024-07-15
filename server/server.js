@@ -1,7 +1,7 @@
 import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import { redisClient } from "./src/redisClient.js";
+import client from "./src/redisClient.js";
 import { handelSocketConnection } from "./src/socketRoutes.js";
 import 'dotenv/config'
 
@@ -24,7 +24,7 @@ io.use((socket, next) => {
   next();
 })
 
-redisClient.connect()
+client.connect()
   .then(() => console.log("database connected"))
   .catch(err => console.log("error connecting db", err))
 

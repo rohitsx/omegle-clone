@@ -11,7 +11,7 @@ export function webrtcSingaling(socket, peerConnection, strangerUserId,) {
             to: strangerUserId
         })
 
-        console.log("offer send to", strangerUserId)
+        console.log("offer send")
     }
 
     async function handelOffer(offer) {
@@ -32,7 +32,6 @@ export function webrtcSingaling(socket, peerConnection, strangerUserId,) {
 
     async function handelAnswer(answer) {
         try {
-            console.log("recived answer", '\n', "signaling state", peerConnection.signalingState);
             const remoteDesc = new RTCSessionDescription(answer)
             await peerConnection.setRemoteDescription(remoteDesc);
         } catch (err) {

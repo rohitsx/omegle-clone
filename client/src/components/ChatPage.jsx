@@ -22,7 +22,7 @@ export default function ChatPage({ username, setUsername }) {
     const remoteVideo = useRef(null)
 
     const { socket, strangerUserId, strangerUsername, sendPeerRequest, connectionStatus } = useSocket(
-        username, remoteVideo.current, setMessage, updateUser, peerConnection, setPeerConnection, prevUpdateUser)
+        username, remoteVideo.current, setMessage, updateUser, peerConnection, setPeerConnection)
     usePeerConnection(socket, strangerUserId, setPeerConnection, peerConnection, updateUser)
 
 

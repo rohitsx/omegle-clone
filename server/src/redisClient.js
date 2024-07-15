@@ -10,4 +10,4 @@ const client = createClient({
   });
 
 
-export {client as redisClient}
+export default client
