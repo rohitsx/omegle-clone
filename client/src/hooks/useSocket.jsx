@@ -16,7 +16,7 @@ export default function useSocket(
 
     useEffect(() => {
         if (username) {
-            const newSocket = io('https://omegel-clone-backend.onrender.com', {
+            const newSocket = io(import.meta.env.VITE_APP_WEBSOCKET_URL, {
                 transports: ['websocket'],
                 auth: { username: username }
             });

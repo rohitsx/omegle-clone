@@ -6,7 +6,6 @@ import { handelSocketConnection } from "./src/socketRoutes.js";
 import 'dotenv/config'
 
 const app = express();
-const port = 3000;
 const httpServer = createServer(app);
 
 const io = new Server(httpServer, {
@@ -32,4 +31,4 @@ io.on("connection", (socket) => {
   handelSocketConnection(io, socket)
 })
 
-httpServer.listen(port, () => console.log("port running at", port))
+httpServer.listen(process.env.PORT, () => console.log("port running at", process.env.PORT))
