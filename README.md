@@ -1,98 +1,107 @@
+# Omegle Clone
 
-# Project Setup
+A real-time video chat application inspired by Omegle, allowing users to connect with random strangers for video calls and text messaging.
 
-To get started with this project, follow these simple steps:
+## 🌐 Live Demo
 
-## 1. Clone the Repository
+Check out the live version of the project: [Omegle Clone Demo](http://omegel-clone.devrohit.tech/)
 
-git clone [repo-url]
+## 📑 Table of Contents
+1. [Features](#-features)
+2. [Tech Stack](#️-tech-stack)
+3. [Deployment](#-deployment)
+4. [How It Works](#-how-it-works)
+5. [Key Components](#-key-components)
+6. [Project Setup](#️-project-setup)
+7. [Future Improvements](#-future-improvements)
+8. [Contributing](#-contributing)
+9. [Contact](#-contact)
 
-## 2. Set up the Client
+## ✨ Features
 
-cd client &&
-npm install &&
-npm run dev
+- Random pairing with strangers
+- Real-time video calling using WebRTC
+- Text chat alongside video calls
+- Ability to switch camera devices
+- User-friendly interface for messaging and video controls
 
-## 3. Set up the Server
+## 🛠️ Tech Stack
 
-cd server &&
-npm install &&
-npm start
+### Frontend
+- React.js
+- Socket.IO Client
+- WebRTC API
 
-Certainly! Here's a summary of your project for a GitHub README:
-Omegle Clone
-This project is a real-time video chat application inspired by Omegle, allowing users to connect with random strangers for video calls and text messaging.
-Features
+### Backend
+- Node.js
+- Express.js
+- Socket.IO
+- Redis for user management and pairing
 
-Random pairing with strangers
-Real-time video calling using WebRTC
-Text chat alongside video calls
-Ability to switch camera devices
-User-friendly interface for messaging and video controls
+## 🚀 Deployment
 
-Tech Stack
-Frontend
+This project is deployed on AWS, with both the frontend and backend served using Nginx.
 
-React.js
-Socket.IO Client
-WebRTC API
+## 🚀 How It Works
 
-Backend
+1. Users enter a username to join the chat
+2. The server pairs random users and establishes a socket connection
+3. WebRTC peer connection is set up for video calling
+4. Users can exchange messages and switch cameras during the call
+5. Users can disconnect and be paired with new strangers
 
-Node.js
-Express.js
-Socket.IO
-Redis for user management and pairing
+## 🧩 Key Components
 
-Key Components
+### Video Call
+- `LocalVideo`: Manages user's own video stream
+- `RemoteVideo`: Displays stranger's video stream
+- `ChangeCam`: Allows switching between camera devices
 
-Video Call
+### Chat Interface
+- `MessageBox`: Displays chat messages
+- `InputBox`: Allows sending messages and finding new chat partners
+- `ConnectionStatusBar`: Shows current connection status
 
-LocalVideo: Manages user's own video stream
-RemoteVideo: Displays stranger's video stream
-ChangeCam: Allows switching between camera devices
+### Core Functionality
+- `useSocket`: Custom hook for socket connection and user pairing
+- `usePeerConnection`: Manages WebRTC peer connections
+- `webrtc-signaling`: Handles WebRTC offer/answer exchange
 
+## 🏗️ Project Setup
 
-Chat Interface
+To get started with this project locally, follow these simple steps:
 
-MessageBox: Displays chat messages
-InputBox: Allows sending messages and finding new chat partners
-ConnectionStatusBar: Shows current connection status
+1. Clone the repository
+ - git clone [repo-url]
+2. Set up the Client
+ - cd client
+ - npm install
+ - npm run dev
+3. Set up the Server
+ - cd server
+ - npm install
+ - npm start
 
+ ## 🌟 Future Improvements
 
-Core Functionality
+- Enhanced error handling
+- Additional chat features (emojis, file sharing)
+- Improved UI/UX design
+- Security enhancements
+- Performance optimizations for scalability
 
-useSocket: Custom hook for socket connection and user pairing
-usePeerConnection: Manages WebRTC peer connections
-webrtc-signaling: Handles WebRTC offer/answer exchange
+## 🤝 Contributing
 
+We welcome contributions to improve the Omegle Clone! Please follow these steps:
 
-Backend Logic
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-User pairing system
-Socket event handling for messaging and video call signaling
-Redis integration for efficient user management
+## 📬 Contact
 
+ROhit Bind - [rohitbindw@gmail.com](mailto:rohitbindw@gmail.com)
 
-
-How It Works
-
-Users enter a username to join the chat
-The server pairs random users and establishes a socket connection
-WebRTC peer connection is set up for video calling
-Users can exchange messages and switch cameras during the call
-Users can disconnect and be paired with new strangers
-
-Future Improvements
-
-Enhanced error handling
-Additional chat features (emojis, file sharing)
-Improved UI/UX design
-Security enhancements
-Performance optimizations for scalability
-
-Getting Started
-(Include instructions on how to set up and run your project locally)
-Contributing
-(Include guidelines for contributing to your project)
-
+Project Link: [git@github.com:rohiitq/omegle-Clone.git](git@github.com:rohiitq/omegle-Clone.git)
