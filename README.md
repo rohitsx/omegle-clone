@@ -11,11 +11,9 @@ Check out the live version of the project: [Omegle Clone Demo](http://omegel-clo
 2. [Tech Stack](#️-tech-stack)
 3. [Deployment](#-deployment)
 4. [How It Works](#-how-it-works)
-5. [Key Components](#-key-components)
-6. [Project Setup](#️-project-setup)
-7. [Future Improvements](#-future-improvements)
-8. [Contributing](#-contributing)
-9. [Contact](#-contact)
+5. [Project Setup](#️-project-setup)
+6. [Future Improvements](#-future-improvements)
+7. [Contributing](#-contributing)
 
 ## ✨ Features
 
@@ -49,23 +47,6 @@ This project is deployed on AWS, with both the frontend and backend served using
 3. WebRTC peer connection is set up for video calling
 4. Users can exchange messages and switch cameras during the call
 5. Users can disconnect and be paired with new strangers
-
-## 🧩 Key Components
-
-### Video Call
-- `LocalVideo`: Manages user's own video stream
-- `RemoteVideo`: Displays stranger's video stream
-- `ChangeCam`: Allows switching between camera devices
-
-### Chat Interface
-- `MessageBox`: Displays chat messages
-- `InputBox`: Allows sending messages and finding new chat partners
-- `ConnectionStatusBar`: Shows current connection status
-
-### Core Functionality
-- `useSocket`: Custom hook for socket connection and user pairing
-- `usePeerConnection`: Manages WebRTC peer connections
-- `webrtc-signaling`: Handles WebRTC offer/answer exchange
 
 ## 🏗️ Project Setup
 
@@ -102,6 +83,4 @@ We welcome contributions to improve the Omegle Clone! Please follow these steps:
 
 ## 📬 Contact
 
-ROhit Bind - [rohitbindw@gmail.com](mailto:rohitbindw@gmail.com)
-
-Project Link: [git@github.com:rohiitq/omegle-Clone.git](git@github.com:rohiitq/omegle-Clone.git)
+Rohit Bind - [rohitbindw@gmail.com](mailto:rohitbindw@gmail.com)
