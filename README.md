@@ -57,10 +57,12 @@ To get started with this project locally, follow these simple steps:
 2. Set up the Client
  - cd client
  - npm install
+ - mv env .env
  - npm run dev
 3. Set up the Server
  - cd server
  - npm install
+ - mv env .env (fill redis parameters)
  - npm start
 
  ## 🌟 Future Improvements
