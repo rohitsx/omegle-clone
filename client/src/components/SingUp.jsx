@@ -14,7 +14,7 @@ export default function SingUp({ setUsername }) {
 
   return (
     <div id="signupPage">
-      <h1 id="OmegelCloneHeading">Omegel Clone</h1>
+      <h1 id="OmegelCloneHeading">Omegle Clone</h1>
       <form onSubmit={usernameSubmit}>
         <input type="text" className="singupInputBox" placeholder='Enter Your Name' />
         <input type="submit" className="singupInputBox" id="signupSubmitBtn" value="Start Chat" />
