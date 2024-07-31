@@ -16,12 +16,16 @@ export default function MessagBox({ message, username, socket, setMessage, stran
                     setMessage(prevMessages => [...prevMessages, content]);
                 }
             })
+
+            return () => {
+                socket.removeAllListeners("private message")
+            }
         }
     }, [strangerUserId])
 
     return (
         <div id="messageBox">
-            {(connectionStatus !== null && message.length === 0) &&(
+            {(connectionStatus !== null && message.length === 0) && (
                 <div id="overlayStatus">
                     {connectionStatus ? (
                         <p>{username} is connected with {strangerUsername}</p>

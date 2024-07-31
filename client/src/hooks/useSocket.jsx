@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState, useRef, PureComponent } from "react"
 import { io } from 'socket.io-client';
 import { useNavigate } from 'react-router-dom';
 import setPcInstance from "../utils/pcInstance";
 
 export default function useSocket(
-    username, remoteVideo, setMessage, updateUser, peerConnection, setPeerConnection) {
+    username, remoteVideo, setMessage, updateUser, peerConnection, setPeerConnection, setStrangerData) {
     const [socket, setSocket] = useState(null)
     const [strangerUserId, setStrangerUserId] = useState('')
     const [strangerUsername, setStrangerUsername] = useState(null)
-    const [sendPeerRequest, setSendPeerRequest] = useState(null)
     const [connectionStatus, setConnectionStatus] = useState(false)
     const [dummyStrangerUserId, setDummyStrangerUserId] = useState(null)
     const [removePair, setRemovePair] = useState(false)
+
     const nav = useNavigate()
 
     useEffect(() => {
@@ -43,53 +43,49 @@ export default function useSocket(
     useEffect(() => {
         if (socket) {
             socket.on('getStragerData', (data) => {
+                setStrangerData(data)
                 setStrangerUserId(data.pairedUserId)
                 setStrangerUsername(data.strangerUsername)
-                setSendPeerRequest(data.sendPeerRequest)
                 setConnectionStatus(true)
             })
             socket.on('strangerLeftTheChat', clearState)
             socket.on('errMakingPair', () => socket.emit('startConnection'))
 
-            return () => {
-                socket.off('getStragerData')
-                socket.off('strangerLeftTheChat')
-                if (strangerUsername === null) {
-                    socket.emit("soloUserLeftTheChat")
-                } else {
-                    socket.emit("pairedUserLeftTheChat", strangerUserId)
-                }
+            return() => {
+                socket.removeAllListeners('getStragerData')
+                socket.removeAllListeners('strangerLeftTheChat')
+                socket.removeAllListeners('errMakingPair')
             }
         }
     }, [socket])
 
     function clearState() {
+        setStrangerData(null)
         setStrangerUserId('')
         setStrangerUsername(null)
         setConnectionStatus(false)
         remoteVideo.srcObject = null
         setMessage([])
+
+        if (peerConnection.signalingState !== 'closed') peerConnection.close()
+        const pcInstance = setPcInstance()
+        setPeerConnection(pcInstance)
     }
 
     useEffect(() => {
         if (updateUser > 0) {
             setDummyStrangerUserId(strangerUserId)
             clearState()
-            if (peerConnection) peerConnection.close()
-            const pcInstance = setPcInstance()
-            setPeerConnection(pcInstance)
+
 
             return () => {
                 setDummyStrangerUserId(null)
-                pcInstance.close()
             }
         }
     }, [updateUser])
 
     useEffect(() => {
-        if (removePair && dummyStrangerUserId) {
-            socket.emit('pairedUserLeftTheChat', dummyStrangerUserId)
-        }
+        if (removePair && dummyStrangerUserId) socket.emit('pairedUserLeftTheChat', dummyStrangerUserId)
     }, [removePair, dummyStrangerUserId])
 
     useEffect(() => {
@@ -100,7 +96,7 @@ export default function useSocket(
         }
     }, [socket, strangerUsername])
 
-    return { socket, strangerUserId, strangerUsername, sendPeerRequest, connectionStatus };
+    return { socket, strangerUserId, strangerUsername, connectionStatus };
 }
 
 

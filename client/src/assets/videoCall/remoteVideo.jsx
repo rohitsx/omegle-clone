@@ -4,6 +4,14 @@ export default function RemoteVideo({ remoteVideo, peerConnection, setChangeCamO
 
     useEffect(() => {
         if (peerConnection) {
+            // peerConnection.ontrack = ({ track, streams }) => {
+            //     track.onunmute = () => {
+            //       if (remoteVideo.current.srcObject) {
+            //         return;
+            //       }
+            //       remoteVideo.current.srcObject = streams[0];
+            //     };
+            //   }
             peerConnection.addEventListener('track', async (event) => {
                 const [remoteStream] = event.streams
                 remoteVideo.current.srcObject = remoteStream

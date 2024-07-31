@@ -5,14 +5,14 @@ function createUserPair(socket, randomUserData) {
     const user1 = {
         socketId: socket.id,
         username: socket.username,
-        sendPeerRequest: true,
+        polite: true,
         pairedUserId: randomUserData.socketId,
         strangerUsername: randomUserData.username,
     };
     const user2 = {
         socketId: randomUserData.socketId,
         username: randomUserData.username,
-        sendPeerRequest: false,
+        polite: false,
         pairedUserId: socket.id,
         strangerUsername: socket.username,
     };
