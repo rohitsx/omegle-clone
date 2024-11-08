@@ -6,15 +6,14 @@ OmegleMeet is a real-time video chat app inspired by Omegle. It allows users to 
 
 🔴 **[Live Demo](http://omegel-clone.devrohit.tech/)** - Try the application now!
 
-## 🚀 Features
+## Features
 - Random stranger matching
 - Real-time video calling with WebRTC
 - Text chat alongside video calls
 - Camera device switching
-- User-friendly interface
 - Mobile responsive design
 
-## 💻 Tech Stack
+## Tech Stack
 **Frontend**
 - React.js
 - Socket.IO Client
@@ -25,17 +24,17 @@ OmegleMeet is a real-time video chat app inspired by Omegle. It allows users to 
 - Socket.IO
 - Redis
 
-## 🌐 Deployment
+## Deployment
 Deployed on AWS with Nginx serving both frontend and backend.
 
-## ⚡ How It Works
+## How It Works
 1. Enter a username to join
 2. Get paired with random users
 3. Start video call via WebRTC
 4. Chat and switch cameras during calls
 5. Disconnect and find new partners
 
-## 🛠️ Project Setup
+## Project Setup
 ```bash
 # Clone repository
 git clone [repo-url]
@@ -53,21 +52,21 @@ mv env .env  # Configure Redis parameters
 npm start
 ```
 
-## 🔮 Future Improvements
+## Future Improvements
 - Enhanced error handling
 - Additional chat features
 - Improved UI/UX
 - Security enhancements
 - Performance optimizations
 
-## 🤝 Contributing
+## Contributing
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
 3. Commit changes (`git commit -m 'Add AmazingFeature'`)
 4. Push to branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-## 📧 Contact
+## Contact
 Rohit Bind - [rohitbindw@gmail.com](mailto:rohitbindw@gmail.com)
 
 ---
